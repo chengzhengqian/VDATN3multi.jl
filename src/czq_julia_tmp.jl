@@ -1,1 +1,1 @@
-pmatwασ,g12matwSασ=cal_p_g12_mat(G12ασ)
+model=create_model_N3(N_spin_orbital,symmetry,n_target,interaction,chemical_potential,e_fns;w_mode="free",cal_Eeff=cal_Eeff_U_J,N_Ueff=3)

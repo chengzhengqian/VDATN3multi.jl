@@ -16,6 +16,7 @@ directly compute
 cal_Γασ(1,4) -> 0 0 0 0
 cal_Γασ(2,4) -> 0 0 0 1
 # this is consistent with direct product order
+# previous, we use a dictionary to store the data, benchmark which one we should use
 """
 function cal_Γασ(Γ,N_spin_orbital)
     reverse(digits(Γ-1,base=2,pad=N_spin_orbital))
@@ -155,6 +156,25 @@ function cal_Xασ(w,pmatwασ,Xmatwασ)
     [expt(w,cal_Xmatfull(pmatwασ,Xmatwασ,i)) for i in 1:N_spin_orbital]
 end
 
+# add symmetry
+"""
+using symmetry to speed up the calculation
+w must has the given symmetry (not check)
+symmetry=[[spinorb1,spinorb2,...]...]
+For entry in symmetry, we assume we have the permutation symmetry within the group.
+
+
+"""
+function cal_Xασ(w,pmatwασ,Xmatwασ,symmetry)
+    N_spin_orbital=length(pmatwασ)
+    result=zeros(N_spin_orbital)
+    for (idx,term) in enumerate(symmetry)
+        result[term].=expt(w,cal_Xmatfull(pmatwασ,Xmatwασ,symmetry[idx][1]))
+    end
+    result                      
+end
+
+
 """
 cal self-energy, G11=G22=1/2, g11=g22=n, G12=-G21,g12=-g21
 return [[s11,s12]...]
@@ -236,3 +256,94 @@ end
 
 # there are also some function to load data, see whether to include them later
 
+# we put the part about symmetry here
+
+"""
+extend the para to full form
+symmetry=[[group1_idx1...],[group2_idx1,...]]
+# symmetry=[[1,2],[3,4]];
+para=[value_for_group1,value_for_group2,...]
+"""
+function extend_with_symmetry(para,symmetry,N_spin_orbital)
+    result=zeros(N_spin_orbital)
+    for (idx,term) in enumerate(symmetry)
+        result[term].=para[idx]
+    end
+    result
+end
+
+"""
+extend G_para[G12_group1,...] to full form
+we change the name from cal to extend
+"""
+function extend_G(G_para,symmetry,N_spin_orbital)
+    extend_with_symmetry(G_para,symmetry,N_spin_orbital)
+end
+
+"""
+extend β_para_below,β_para_above to full form
+β_para_below=[3.0,4.0]
+β_para_above=[3.1,4.1]
+"""
+function extend_β(β_para_below,β_para_above,symmetry,N_spin_orbital)
+    β_para_below_ext=extend_with_symmetry(β_para_below,symmetry,N_spin_orbital)
+    β_para_above_ext=extend_with_symmetry(β_para_above,symmetry,N_spin_orbital)
+    [[β_para_below_ext[i],β_para_above_ext[i]] for i in 1:N_spin_orbital]
+end
+
+"""
+generate momentum density point
+update from previous version, so it takes e_fns now.
+"""
+function cal_eασ(e_fns,nασ,symmetry)
+    N_spin_orbital=length(nασ)
+    eασ=Vector{Any}(undef,N_spin_orbital)
+    for (idx,term) in enumerate(symmetry)
+        es=gene_ϵs(e_fns[idx],nασ[term[1]])
+        for i in term
+            eασ[i]=es
+        end
+    end
+    eασ
+end
+
+"""
+α is the orbital idx (start form 1) and σ is the spin indx (1,2) for spin up and own
+"""
+function get_idx(α,σ)
+    (α-1)*2+σ
+end
+
+
+"""
+return the largest integer that is smaller then N_average
+"""
+function absolute_floor(x)
+    floor_x=floor(x)
+    if(floor_x==x)
+        x-1
+    else
+        floor_x
+    end    
+end
+
+"""
+return the smallest integer that is bigger then x
+"""
+function absolute_ceil(x)
+    ceil_x=ceil(x)
+    if(ceil_x==x)
+        x+1
+    else
+        ceil_x
+    end    
+end
+
+
+"""
+compute Gfull (irreducible form)
+"""
+function cal_Gfull(nασ_,G12ασ_,g12ασ_,Aασ_below_,Aασ_above_,Slocασ_)
+    gextraασ_=cal_glocReducedInA(Aασ_below_,Aασ_above_,Slocασ_[1],Slocασ_[2])
+    Gfullασ_=cal_g0fullIngG12(nασ_,G12ασ_,g12ασ_,gextraασ_[1],gextraασ_[2],gextraασ_[3],gextraασ_[4])
+end

@@ -33,6 +33,7 @@ end
 
 """
 effective energy, use to compute w02 to have given nασ
+neffασ=cal_neffασ(nασ,G12ασ)
 """
 function cal_neffασ(nασ,G12ασ)
     cal_neffInn.(nασ,G12ασ)
@@ -61,4 +62,4 @@ function cal_w02(neffασ)
     w02=[cal_w02_Γ(Γ,N_spin_orbital,neffασ,peffασ) for Γ in 1:N_Γ]
 end
 
-
+# there are some function about how to construct w using the fluctuation, we move them to another file
