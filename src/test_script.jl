@@ -56,6 +56,7 @@ model.obs
 model.options
 compute(model)
 
+# consider the N=2
 
 
 # set_precompute_eασ(model,true)

@@ -1,0 +1,1 @@
+res=optimize(p->(set_para(model2,p);compute(model2)),get_para(model2))
