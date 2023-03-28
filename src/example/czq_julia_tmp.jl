@@ -1,1 +1,2 @@
-res=optimize(p->(set_para(model2,p);compute(model2)),get_para(model2))
+filename="result_n2.dat"
+saveData(results, "$(data_dir)/$(filename)")
