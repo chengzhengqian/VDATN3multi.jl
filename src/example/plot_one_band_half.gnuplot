@@ -12,7 +12,8 @@ set xrange [0:10]
 set yrange [0:0.25]
 set xlabel "U/t"
 set ylabel "d"
-plot dmftfile  u 1:2 t "DMFT(NRG)", n2file u 1:5 w l t "N=2",n3file u 1:5 w l t "N=3",
+plot NaN w p lc "black" pt 5 t "DMFT(NRG)" ,  n2file u 1:5 w l t "N=2" lc "green" ,n3file u 1:5 w l t "N=3" lc "red",  dmftfile  u 1:2 t "" lc "black" pt 5
+# unset label
 
 set terminal pngcairo size 800,600 linewidth 3 font ",20"
 set output "./figures/one_band_half_d_U.png"
@@ -25,9 +26,10 @@ set xrange [0:10]
 set yrange [0:1]
 set xlabel "U/t"
 set ylabel "Z"
-plot dmftfilez  u 1:2 t "DMFT(NRG)", n2file u 1:6 w l t "N=2",n3file u 1:12 w l t "N=3",
+plot NaN w p lc "black" pt 5 t "DMFT(NRG)",  n2file u 1:6 w l t "N=2" lc "green" ,n3file u 1:12 w l t "N=3" lc "red",  dmftfilez  u 1:2  pt 5 lc "black" t ""
 
 set terminal pngcairo size 800,600 linewidth 3 font ",20"
 set output "./figures/one_band_half_Z_U.png"
 replot
 unset terminal
+
