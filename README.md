@@ -6,7 +6,7 @@
 To start with, include the vdat.jl. The following code assumes current path is <path_to_VDATN3multi>/src/example/
 https://github.com/chengzhengqian/VDATN3multi.jl/blob/8afb25f6b68dfad11e288ed0479c6095f79ed17c/src/example/example_one_band_half.jl#L3
 
-### One band example
+### One-band Hubbard model at half-filling
 To start with, let's solve the one band Hubbard on a d=\infty Bethe lattice. There are two modes to work with, the fixed density mode and the free density mode. In fixed density mode, one can specify the density for each spin orbital, and VDAT automatically constrains the variational parameters to satifies the given densities. For example, it is useful to examine the half-filling case, which exhibits the metal-insulator transition at some critical U.
 To perform the VDAT calculation, we need to build an instance of Model, which can be created with create_model.
 https://github.com/chengzhengqian/VDATN3multi.jl/blob/8afb25f6b68dfad11e288ed0479c6095f79ed17c/src/example/example_one_band_half.jl#L5-L15
@@ -40,6 +40,20 @@ https://github.com/chengzhengqian/VDATN3multi.jl/blob/26728971e324dda063be6e02f1
 The quasi-particle weight Z vs U for one Hubbard model at half-filling on d=\infty Bethe lattice
 
 ![plot](./src/example/figures/one_band_half_Z_U.png)
+
+### One-band Hubbard model at fixed density 
+
+One can simiply change n_target_ to solve the model at a given density (no magnetization). To simplify the process of generating data, we define the following functions:
+
+https://github.com/chengzhengqian/VDATN3multi.jl/blob/11f62b594927baafa31c4e8c48cdb3915640d8e7/src/example/example_one_band_doped.jl#L12-L33
+
+Then we could generate the solutions for a range of U and density as:
+
+https://github.com/chengzhengqian/VDATN3multi.jl/blob/11f62b594927baafa31c4e8c48cdb3915640d8e7/src/example/example_one_band_doped.jl#L36-L47
+
+One can similarly perform the N=2 calculation. Finally, we check the double occupancy vs U using N=2 and N=3 and compare the result to DMFT(NRG).
+
+![plot](./src/example/figures/one_band_doped_d_U.png)
 
 
 
