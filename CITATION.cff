@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Cheng"
+  given-names: "Zhengqian"
+  orcid: "https://orcid.org/0000-0003-0959-3968"
+title: "VDATN3multi.jl"
+date-released: 2023-3-28
+url: "https://github.com/chengzhengqian/VDATN3multi.jl"
