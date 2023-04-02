@@ -1,13 +1,15 @@
 # VDATN3multi.jl
 
 ## Tutorial
-
+### Intructions to run the examples
+All examples to run VDAT and scripts to generate plots are located in <path_to_VDATN3multi>/src/example/.
+The following code snippets may be outdated, please refer to the lastest version of the code to find the correct usage.
 ### Include vdat.jl 
 To start with, include the vdat.jl. The following code assumes current path is <path_to_VDATN3multi>/src/example/
 https://github.com/chengzhengqian/VDATN3multi.jl/blob/8afb25f6b68dfad11e288ed0479c6095f79ed17c/src/example/example_one_band_half.jl#L3
 
 ### One-band Hubbard model at half-filling
-To start with, let's solve the one band Hubbard on a d=\infty Bethe lattice. There are two modes to work with, the fixed density mode and the free density mode. In fixed density mode, one can specify the density for each spin orbital, and VDAT automatically constrains the variational parameters to satifies the given densities. For example, it is useful to examine the half-filling case, which exhibits the metal-insulator transition at some critical U.
+To start with, let's solve the one band Hubbard on a d=\infty Bethe lattice. There are two modes to work with, the fixed density mode and the free density mode. In fixed density mode, one can specify the density for each spin orbital, and VDAT automatically constrains the variational parameters to satify the given densities. For example, we start with half-filling case, which exhibits the metal-insulator transition at some critical U.
 To perform the VDAT calculation, we need to build an instance of Model, which can be created with create_model.
 https://github.com/chengzhengqian/VDATN3multi.jl/blob/8afb25f6b68dfad11e288ed0479c6095f79ed17c/src/example/example_one_band_half.jl#L5-L15
 
@@ -54,6 +56,59 @@ https://github.com/chengzhengqian/VDATN3multi.jl/blob/11f62b594927baafa31c4e8c48
 One can similarly perform the N=2 calculation. Finally, we check the double occupancy vs U using N=2 and N=3 and compare the result to DMFT(NRG).
 
 ![plot](./src/example/figures/one_band_doped_d_U.png)
+
+### One-band Hubbard model at given chemical potential
+It is also useful to solve the model at given chemical potential instead of given density. 
+
+https://github.com/chengzhengqian/VDATN3multi.jl/blob/7677f3ff5869eff081eccb196bd7f80de04a46c4/src/example/example_one_band_free.jl#L9-L21
+
+Especially, one should pay attention to 
+https://github.com/chengzhengqian/VDATN3multi.jl/blob/7677f3ff5869eff081eccb196bd7f80de04a46c4/src/example/example_one_band_free.jl#L19
+which sets the model without any density constraint and pass a function named as cal_Eeff_U, which takes N_Ueff number of parameters to describe interacting projectors.
+
+The main purpose to introduce cal_Eeff is that for multi-orbital system, the number of variational parameters for interacting projectors grows exponentially with number of orbitals, and therefore, it is useful to let users to define customized ways to parametrize the interacting projectors. For example, cal_Eeff_U is defined as 
+https://github.com/chengzhengqian/VDATN3multi.jl/blob/7677f3ff5869eff081eccb196bd7f80de04a46c4/src/w_free.jl#L168-L185
+
+The signature of cal_Eeff is (Γασ,μeffασ,Ueff_para), where Γασ is the atomic configuration, μeffασ is a rray of effective chemical potentials to control the densities, and Ueff_para is a array of effective interacting parameters to control the local correlations. cal_Eeff_U will become the Gutzwiller projector in the one-band case, and the probabilty of Γασ is proportional to exp(-cal_Eeff(Γασ,μeffασ,Ueff_para)). We also define 
+
+https://github.com/chengzhengqian/VDATN3multi.jl/blob/7677f3ff5869eff081eccb196bd7f80de04a46c4/src/w_free.jl#L122
+
+to define the Jastrow projector when we have both U and J in multi-orbital case. It should be notes that N_Ueff is fixed for a given parametrization and must be passed to the model as illustrated above.
+
+Now, we could solve the model with various chemical potentials at given U.
+First, it is useful to double-check results with the fixed density approach. We can set chemical potential as U/2, and compute density deviation from 0.5.
+
+https://github.com/chengzhengqian/VDATN3multi.jl/blob/4af70df37654968e7d4ac92066b16049a98df2c6/src/example/example_one_band_free.jl#L38-L48
+
+The density deviation (i.e, n-0.5) vs U for one band Hubbard model using half-filling chemical potential.
+
+![plot](./src/example/figures/one_band_dmu_0_dn_U.png)
+
+One can understand that the deviation from the exact density is due to the error of numerical minization, and therefore, should relates to how the energy responses to the density deviation. For metal phase, energy is quadratic in density deviation while in insulating phase, it is linear in the absoluate value of density deviation. Therefore, we expect larger density deviation for the metal phase.
+
+One can also check that two approaches produce the same double occupancy vs U plot:
+
+![plot](./src/example/figures/one_band_dmu_0_fixed_check_d_U.png)
+
+Next, We start from half-filling parameters and increase chemical potential.
+
+https://github.com/chengzhengqian/VDATN3multi.jl/blob/7677f3ff5869eff081eccb196bd7f80de04a46c4/src/example/example_one_band_free.jl#L70-L84
+
+And we can plot the density as a function of chemical potential for U=1.0,2.0,...,9.0 
+
+![plot](./src/example/figures/one_band_n_dmu_from_half.png)
+
+
+We could see that because we start calculation from half-filling, the calculation stucks at some local minimum and requires larger chemical potential to push system away from half-filling. To address this problem, we could start from some point where the system is already away from half-filling and decrease the chemical potential, and we found this yields the correct gap for N=3. 
+
+The density as a function of chemical potential for U=1.0,2.0,...,9.0 for one-band Hubbard model. N=3(reverse) means that the calculation starts from a doped regime and decrease the chemical potential, while N=3 means the calculation starts from half-filling and increase the chemical potential.
+
+![plot](./src/example/figures/one_band_n_dmu_from_half_reverse.png)
+
+
+### One-band model at given magnetic field
+
+
 
 
 
