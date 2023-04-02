@@ -75,13 +75,29 @@ https://github.com/chengzhengqian/VDATN3multi.jl/blob/7677f3ff5869eff081eccb196b
 
 to define the Jastrow projector when we have both U and J in multi-orbital case. It should be notes that N_Ueff is fixed for a given parametrization and must be passed to the model as illustrated above.
 
-Now, we could solve the model with various chemical potentials at given U. We start from half-filling and increasing chemical potential.
+Now, we could solve the model with various chemical potentials at given U.
+First, it is useful to double-check results with the fixed density approach. We can set chemical potential as U/2, and compute density deviation from 0.5.
+
+https://github.com/chengzhengqian/VDATN3multi.jl/blob/4af70df37654968e7d4ac92066b16049a98df2c6/src/example/example_one_band_free.jl#L38-L48
+
+The density deviation (i.e, n-0.5) vs U for one band Hubbard model using half-filling chemical potential.
+
+![plot](./src/example/figures/one_band_dmu_0_dn_U.png)
+
+One can understand that the deviation from the exact density is due to the error of numerical minization, and therefore, should relates to how the energy responses to the density deviation. For metal phase, energy is quadratic in density deviation while in insulating phase, it is linear in the absoluate value of density deviation. Therefore, we expect larger density deviation for the metal phase.
+
+One can also check that two approaches produce the same double occupancy vs U plot:
+
+![plot](./src/example/figures/one_band_dmu_0_fixed_check_d_U.png)
+
+Next, We start from half-filling parameters and increase chemical potential.
 
 https://github.com/chengzhengqian/VDATN3multi.jl/blob/7677f3ff5869eff081eccb196bd7f80de04a46c4/src/example/example_one_band_free.jl#L70-L84
 
 And we can plot the density as a function of chemical potential for U=1.0,2.0,...,9.0 
 
 ![plot](./src/example/figures/one_band_n_dmu_from_half.png)
+
 
 We could see that because we start calculation from half-filling, the calculation stucks at some local minimum and requires larger chemical potential to push system away from half-filling. To address this problem, we could start from some point where the system is already away from half-filling and decrease the chemical potential, and we found this yields the correct gap for N=3. 
 
@@ -90,6 +106,7 @@ The density as a function of chemical potential for U=1.0,2.0,...,9.0 for one-ba
 ![plot](./src/example/figures/one_band_n_dmu_from_half_reverse.png)
 
 
+### One-band model at given magnetic field
 
 
 
