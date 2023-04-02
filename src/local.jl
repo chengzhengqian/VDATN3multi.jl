@@ -1,4 +1,6 @@
 """
+!!these are in w
+we may also wnat to add in u
 compute pmatwασ,g12matwSασ
 G12ασ=[0.4,0.4]
 pmatwασ,g12matwSασ=cal_p_g12_mat(G12ασ)
@@ -9,6 +11,14 @@ function cal_p_g12_mat(G12ασ::Array)
     pmatwασ,g12matwSασ
 end
 
+"""
+Vwu
+"""
+function cal_Vwu_mat(G12ασ::Array)
+    cal_Vwu.(G12ασ)
+end
+
+    
 """
 compute g11matwSασ
 to double check nασ from model

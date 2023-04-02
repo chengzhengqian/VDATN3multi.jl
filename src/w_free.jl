@@ -94,8 +94,10 @@ cal_Eeff=cal_Eeff_test
 w_para=[0.3,0.2,0.1,0.2]
 symmetry=[[1,2]]
 cal_Eeff=cal_Eeff_U_J
+# this should be understand in u representation, (so has no constraints)
+# we rename from cal_w_free to cal_u_free, indicates that we have no-restricition. (in w, one should use neff to restrict density, implement another w_mode for that)
 """
-function cal_w_free(w_para,symmetry,N_spin_orbital,cal_Eeff)
+function cal_u_free(w_para,symmetry,N_spin_orbital,cal_Eeff)
     N_orbital=trunc(Int,N_spin_orbital/2)
     N_symmetry=length(symmetry)
     μeff_para=w_para[1:N_symmetry]

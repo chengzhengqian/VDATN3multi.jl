@@ -31,6 +31,52 @@ include("./gene_code/delta.jl")
 include("./gene_code/g0IngG12.jl")
 include("./gene_code/g0fullIngG12.jl")
 
+
+# we add the version for u representation
+# u=Vuw*w, w*Vwu*u
+include("./gene_code/Vuw.jl")
+include("./gene_code/Vwu.jl")
+# wihtout w, it means in u reprensetation
+include("./gene_code/pmat.jl")
+include("./gene_code/g11mat.jl")
+include("./gene_code/g11matS.jl")
+include("./gene_code/g12mat.jl")
+include("./gene_code/g12matS.jl")
+include("./gene_code/g33mat.jl")
+include("./gene_code/g33matS.jl")
+# just check
+include("./gene_code/g13mat.jl")
+include("./gene_code/g23mat.jl")
+include("./gene_code/g31mat.jl")
+include("./gene_code/g32mat.jl")
+
+# # check
+# # (Vuw)^T*Ou*Vuw=Ow
+# # (Vwu)^T*Ow*Vwu=Ou
+# # we need full entries of g0
+# g012,g013,g023,g031,g032,g033=rand(6)
+# g0para=g012,g013,g023,g031,g032,g033
+# Vuw=cal_Vuw(g012)
+# Vwu=cal_Vwu(g012)
+# # Vuw*Vwu                         # should be idenity, checked
+# OwToOu=(Ow)->transpose(Vwu)*Ow*Vwu
+# OuToOw=(Ou)->transpose(Vuw)*Ou*Vuw
+# OwToOu(cal_pmatw(g012))-cal_pmat(g012)
+# OwToOu(cal_g11matw(g012))-cal_g11mat(g012)
+# OwToOu(cal_g11matwS(g012))-cal_g11matS(g012)
+# OwToOu(cal_g12matw(g012))-cal_g12mat(g012)
+# OwToOu(cal_g12matwS(g012))-cal_g12matS(g012)
+# OwToOu(cal_g33matw(g0para...))-cal_g33mat(g0para...)
+# OwToOu(cal_g33matwS(g0para...))-cal_g33matS(g0para...)
+# OuToOw(cal_g33mat(g0para...))-cal_g33matw(g0para...)
+# OuToOw(cal_g33matS(g0para...))-cal_g33matwS(g0para...)
+# we have checked 
+
+
+# test for u representation
+# g012=0.4
+# cal_Vuw(g012)*cal_Vwu(g012)
+
 # check for fixed point (examples of compute g012 from fixed Δ and S)
 # nloc=0.4
 # g012=0.3

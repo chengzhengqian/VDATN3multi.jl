@@ -125,7 +125,7 @@ end
 compute the model
 delete!(model.options,"nασ")
 """
-function compute(model::Model)
+function compute(model::Model; all_obs=false)
     # now, we can start the calculaton, we first start with N=3, but add N=2 or N=1 later, model.options, model.obs, model.w_para
     treat_precompute_eασ(model)
     # for N=2,3, when N=2, compute_local already yield total energy
@@ -133,6 +133,9 @@ function compute(model::Model)
     if(model.N_time_step==3)
         compute_momentum(model)
     end
+    if(all_obs)
+        compute_Z(model)
+    end    
     model.obs["Etotal"]
 end
 
@@ -156,12 +159,18 @@ end
 
 """
 first stage, compute A block
+get_para(model)
+set_para(model,[ 0.6268414068801784, 0.19702119823595263, 0.6261874088728155, 3.8287379976382985, 0.7190212450683349])
+# check the problem for n->0 or 1
+model=model_n3
 """
 function compute_local(model::Model)
     # symmetry,N_spin_orbital=model.symmetry,model.N_spin_orbital
     # local symmetry,N_spin_orbital # force to check
     N_symmetry=length(model.symmetry)
     G12ασ=extend_G(model.G12_para,model.symmetry,model.N_spin_orbital)
+    # we add one more restriction, !! tweak the lower bound in future
+    G12ασ=clamp.(G12ασ,0.2,0.5)
     pmatwασ,g12matwSασ=cal_p_g12_mat(G12ασ)
     g11matwSασ=cal_g11_mat(G12ασ)
     # now, we need to use different scheme
@@ -176,13 +185,20 @@ function compute_local(model::Model)
     elseif(option_w_mode(model)=="free")
         w_para=model.w_para
         cal_Eeff=model.options["cal_Eeff"]
-        w=cal_w_free(w_para,model.symmetry,model.N_spin_orbital,cal_Eeff)
+        # we use Vwu to transform u to w (in u, there is no restricution and in w, the distribution should be bounded by neff which depends on G12
+        u=cal_u_free(w_para,model.symmetry,model.N_spin_orbital,cal_Eeff)
+        Vwu_mat=cal_Vwu_mat(G12ασ)
+        Vwu=kron(Vwu_mat...)
+        w=Vwu*u
+        w=w/sqrt(sum(w.^2))
     else
         error("w_mode $(option_w_mode(model)) is not supported")
     end
     # compute g12, and check nασ
     g12ασ=cal_Xασ(w,pmatwασ,g12matwSασ,model.symmetry)
     nασ=cal_Xασ(w,pmatwασ,g11matwSασ,model.symmetry)
+    # nασ=restrict_nασ(nασ)
+    # for the free case, nασ may out of range and g12ασ may also have problems. one should compute the boundary of density, i.e, when G12 is not 1/2, w shoudl be within some range to yield physical values.
     # to fully check , set a option in model 
     # nασ=cal_Xασ(w,pmatwασ,g11matwSασ)
     # we need to check density constraint, or generate discretization of k points
@@ -201,7 +217,9 @@ function compute_local(model::Model)
         Slocασ=restrict_Slocασ(Slocασ,cutoff=option_cutoff_Sloc(model))
         # compute charge transfer
         Δασ=cal_Δασ(g12ασ,Slocασ)
-        Δασ=restrict_Δασ(Δασ,nασ; cutoff=option_cutoff_Δ(model))
+        # we could not use cutoff here for Δασ, if it is close to 0, we use fix the prolbem in the momentum calculation; remove the option from constructor too!
+        # Δασ=restrict_Δασ(Δασ,nασ; cutoff=option_cutoff_Δ(model))
+        Δασ=restrict_Δασ(Δασ,nασ; cutoff=0.0)
         # we put all assigment to obs here, model.obs
         @set_obs model G12ασ  w g12ασ Slocασ  Δασ pmatwασ g12matwSασ g11matwSασ
         # we can then compute the momentum part and BCD block
@@ -210,8 +228,8 @@ function compute_local(model::Model)
         # nασ=[0.2,0.3]
         g12ασ_0=sqrt.(nασ.*(1.0  .- nασ))
         Zασ=(g12ασ./g12ασ_0).^2
-        nn=[expt(w,cal_Xmatfull(pmatwασ,g11matwSασ,idx1,idx2)) for (idx1,idx2,coefficient) in interaction]
-        Eloc=sum([interaction[i][3]*nn[i]   for i in 1:length(interaction)])
+        nn=[expt(w,cal_Xmatfull(pmatwασ,g11matwSασ,idx1,idx2)) for (idx1,idx2,coefficient) in model.interaction]
+        Eloc=sum([model.interaction[i][3]*nn[i]   for i in 1:length(model.interaction)])
         Ek=0
         @get_obs model eασ
         for term in model.symmetry
@@ -247,22 +265,21 @@ function compute_momentum(model::Model)
         error("length of model.β_para is $(length(model.β_para)), which should be either $(2*N_symmetry) or $(N_symmetry) ")
     end
     βασ=extend_β(β_below_para,β_above_para,model.symmetry,model.N_spin_orbital)
-    Aασ_below,Aασ_above,αασ,nk,Ekασ=[Array{Any}(undef,model.N_spin_orbital) for _ in 1:5]
+    Aασ_below,Aασ_above,nk,Ekασ=[Array{Any}(undef,model.N_spin_orbital) for _ in 1:5]
     # nασ,Δασ,βασ,eασ=model.obs["nασ"],model.obs["Δασ"],model.obs["βασ"],model.obs["eασ"]
     # nασ,Δασ,βασ,eασ=0,0,0,0, to test
     Ek=0 # kinetic energy
-    # use the symmetry to simplify the calcuation
+    # use the symmetry to simplify the calcuation, term=[1,2]
     for term in model.symmetry
         # just for debug, comment it later
         # global Ek,Aασ_below,Aασ_above,αασ,nk
         i=term[1]
-        Aασ_below_,Aασ_above_,Kbelow_,Kabove_,αασ_,nk_=cal_Abelow_Aabove_Kbelow_Kabove_αασ_nk_(nασ[i],Δασ[i],βασ[i],eασ[i])
+        Aασ_below_,Aασ_above_,Kbelow_,Kabove_,nk_=cal_Abelow_Aabove_Kbelow_Kabove_nk_safe(nασ[i],Δασ[i],βασ[i],eασ[i])
         Ekασ_=Kbelow_+Kabove_
         Ek+=Ekασ_*length(term)
         for idx in term
             Aασ_below[idx]=Aασ_below_
             Aασ_above[idx]=Aασ_above_
-            αασ[idx]=αασ_
             nk[idx]=nk_
             Ekασ[idx]=Ekασ_
         end        
@@ -277,19 +294,53 @@ function compute_momentum(model::Model)
         Echem+=-term[2]*nασ[term[1]]
     end
     Etotal=Ek+Eloc+Echem
-    # compute Z , nασ=[0.5,0.5]
+    # compute Z , nασ=[0.5,0.5] # we put in a differnet function, as we may need some special treat for α
     # chemical potential for non-interacting density
-    μασ=zeros(model.N_spin_orbital)
-    for (idx,term) in enumerate(model.symmetry)
-        i=term[1]
-        μασ_=model.e_fns[idx](nασ[i])
-        for ασ in term
-            μασ[ασ]=μασ_
-        end        
-    end    
-    Zασ=[cal_nk(αασ[i][1],βασ[i][1],μασ[i])-cal_nk(αασ[i][2],βασ[i][2],μασ[i]) for i in 1:model.N_spin_orbital]
+    # μασ=zeros(model.N_spin_orbital)
+    # for (idx,term) in enumerate(model.symmetry)
+    #     i=term[1]
+    #     μασ_=model.e_fns[idx](nασ[i])
+    #     for ασ in term
+    #         μασ[ασ]=μασ_
+    #     end        
+    # end
+    # we put this in a seperate function
+    # Zασ=[cal_nk(αασ[i][1],βασ[i][1],μασ[i])-cal_nk(αασ[i][2],βασ[i][2],μασ[i]) for i in 1:model.N_spin_orbital]
     # model.obs
-    @set_obs model  Etotal Ek Eloc Echem Aασ_below Aασ_above αασ  βασ nk nn g33matwασ Ekασ Zασ μασ 
+    @set_obs model  Etotal Ek Eloc Echem Aασ_below Aασ_above  βασ nk nn g33matwασ Ekασ 
     Etotal
 end
 
+"""
+one can directly update interaction, chemical potential, but for fixed density mode, one just compute eασ once, so one need to set the flag for require_precompute_eασ. And eασ will be updated when compute(model) is called next time.
+"""
+function update_n_target(model::Model,n_target)
+    if(option_is_density_fixed(model))
+        model.n_target[:]=n_target
+        option_require_precompute_eασ(model,true)
+    else
+        error("model should be in density fixed mode and then can be set with n_target!")
+    end    
+end
+
+"""
+for N=3, we move the part in 'compute' to calcualte Z here
+model=model_n3
+"""
+function compute_Z(model::Model)
+    if(model.N_time_step==3)
+        @get_obs model nασ Δασ βασ eασ
+        μασ=zeros(model.N_spin_orbital)
+        for (idx,term) in enumerate(model.symmetry)
+            i=term[1]
+            μασ_=model.e_fns[idx](nασ[i])
+            for ασ in term
+                μασ[ασ]=μασ_
+            end        
+        end
+        # one may need to add limiting cases. Do it later!
+        αασ=[cal_αασ_(nασ[i],Δασ[i],βασ[i],eασ[i]) for i in 1:model.N_spin_orbital]
+        Zασ=[cal_nk(αασ[i][1],βασ[i][1],μασ[i])-cal_nk(αασ[i][2],βασ[i][2],μασ[i]) for i in 1:model.N_spin_orbital]
+        @set_obs model αασ Zασ
+    end    
+end

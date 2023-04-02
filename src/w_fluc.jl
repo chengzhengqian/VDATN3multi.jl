@@ -130,6 +130,9 @@ w=cal_w_func(xsym,nασ,G12ασ,vΓηsym,regulate_knorm_exp)
 w=cal_w_func(zeros(6),nασ,G12ασ,vΓηsym,regulate_knorm_exp)
 g11ασ=cal_Xασ(w,pmatwασ,g11matwSασ)
 g12ασ=cal_Xασ(w,pmatwασ,g12matwSασ)
+# for a given G12ασ=[1.0,0.4], we have a natural boundary of density in w space. So even in free density mode, we should respect this fact.
+cal_neffασ([0.0 for _ in length(G12ασ)],G12ασ)
+cal_neffασ([1.0 for _ in length(G12ασ)],G12ασ)
 
 """
 function cal_w_fluc(xsym,nασ,G12ασ,vΓηsym::VΓηsym,regulate_knorm)

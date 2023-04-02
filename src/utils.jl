@@ -142,6 +142,8 @@ end
 compute expetation values, w^2 is assumed to be normalizd,
 pmatwασ is just array of identity matrix in w basis. But we leave room for future general code
 !!! assuming the normalization
+# if we working on the u rerensetation, pmat is not identity matrix
+!! add the general function later
 """
 function expt(w,Xmatfull)
     dot(w,Xmatfull*w)
@@ -222,6 +224,8 @@ n<=n-Δ
 n>=Δ
  Δασ ∈ [0, min(n,1-n)]
 charge transfer. !! we may need to use two different cutoff?
+# this has problem in n->0 or n->1
+restrict_Δασ(Δασ,nασ;cutoff=0)
 """
 function restrict_Δασ(Δασ,nασ;cutoff=1e-4)
     clamp.(Δασ,cutoff,min.(nασ .- cutoff,1.0 .- nασ .- cutoff))

@@ -92,3 +92,15 @@ end
 # @macroexpand(@set_obs model a)
 # wether we need to compute eασ, true, for fixed the density case and first run
 
+"""
+customize how model looks in repl
+"""
+function Base.show(io::IO, model::Model)
+    compact = get(io, :compact, false)
+    if !compact
+        print("<model N=$(model.N_time_step) N_spin_orb=$(model.N_spin_orbital) fixed_n=$(option_is_density_fixed(model))>")
+    else
+        print("<model N=$(model.N_time_step)>")
+    end    
+end
+
