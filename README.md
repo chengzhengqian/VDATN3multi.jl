@@ -1,7 +1,9 @@
 # VDATN3multi.jl
 
 ## Tutorial
-
+### Intructions to run the examples
+All examples to run VDAT and scripts to generate plots are located in <path_to_VDATN3multi>/src/example/.
+The following code snippets may be outdated, please refer to the lastest version of the code to find the correct usage.
 ### Include vdat.jl 
 To start with, include the vdat.jl. The following code assumes current path is <path_to_VDATN3multi>/src/example/
 https://github.com/chengzhengqian/VDATN3multi.jl/blob/8afb25f6b68dfad11e288ed0479c6095f79ed17c/src/example/example_one_band_half.jl#L3
@@ -54,6 +56,41 @@ https://github.com/chengzhengqian/VDATN3multi.jl/blob/11f62b594927baafa31c4e8c48
 One can similarly perform the N=2 calculation. Finally, we check the double occupancy vs U using N=2 and N=3 and compare the result to DMFT(NRG).
 
 ![plot](./src/example/figures/one_band_doped_d_U.png)
+
+### One-band Hubbard model at given chemical potential
+It is also useful to solve the model at given chemical potential instead of given density. 
+
+https://github.com/chengzhengqian/VDATN3multi.jl/blob/7677f3ff5869eff081eccb196bd7f80de04a46c4/src/example/example_one_band_free.jl#L9-L21
+
+Especially, one should pay attention to 
+https://github.com/chengzhengqian/VDATN3multi.jl/blob/7677f3ff5869eff081eccb196bd7f80de04a46c4/src/example/example_one_band_free.jl#L19
+which sets the model without any density constraint and pass a function named as cal_Eeff_U, which takes N_Ueff number of parameters to describe interacting projectors.
+
+The main purpose to introduce cal_Eeff is that for multi-orbital system, the number of variational parameters for interacting projectors grows exponentially with number of orbitals, and therefore, it is useful to let users to define customized ways to parametrize the interacting projectors. For example, cal_Eeff_U is defined as 
+https://github.com/chengzhengqian/VDATN3multi.jl/blob/7677f3ff5869eff081eccb196bd7f80de04a46c4/src/w_free.jl#L168-L185
+
+The signature of cal_Eeff is (Γασ,μeffασ,Ueff_para), where Γασ is the atomic configuration, μeffασ is a rray of effective chemical potentials to control the densities, and Ueff_para is a array of effective interacting parameters to control the local correlations. cal_Eeff_U will become the Gutzwiller projector in the one-band case, and the probabilty of Γασ is proportional to exp(-cal_Eeff(Γασ,μeffασ,Ueff_para)). We also define 
+
+https://github.com/chengzhengqian/VDATN3multi.jl/blob/7677f3ff5869eff081eccb196bd7f80de04a46c4/src/w_free.jl#L122
+
+to define the Jastrow projector when we have both U and J in multi-orbital case. It should be notes that N_Ueff is fixed for a given parametrization and must be passed to the model as illustrated above.
+
+Now, we could solve the model with various chemical potentials at given U. We start from half-filling and increasing chemical potential.
+
+https://github.com/chengzhengqian/VDATN3multi.jl/blob/7677f3ff5869eff081eccb196bd7f80de04a46c4/src/example/example_one_band_free.jl#L70-L84
+
+And we can plot the density as a function of chemical potential for U=1.0,2.0,...,9.0 
+
+![plot](./src/example/figures/one_band_n_dmu_from_half.png)
+
+We could see that because we start calculation from half-filling, the calculation stucks at some local minimum and requires larger chemical potential to push system away from half-filling. To address this problem, we could start from some point where the system is already away from half-filling and decrease the chemical potential, and we found this yields the correct gap for N=3. 
+The density as a function of chemical potential for U=1.0,2.0,...,9.0 for one-band Hubbard model. ( N=3(reverse) means that we start from a doped regime and decrease the chemical potential, where N=3 means we start from the half-filling and increase the chemical potential)
+
+![plot](./src/example/figures/one_band_n_dmu_from_half_reverse.png)
+
+
+
+
 
 
 
