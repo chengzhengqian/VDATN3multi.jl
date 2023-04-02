@@ -14,16 +14,16 @@ model_n3=create_model(N_spin_orbital_,symmetry_,n_target_,
                       interaction_,chemical_potential_,e_fns_;
                       particle_hole_symmetric=true,N_time_step=3)
 
-
 results=[]
 Us=1.0:0.1:10.0
+# U=1.0  model=model_n3   model_n3.obs
 
 for U in Us
     print("processing U=$(U)\n")
     model_n3.interaction=gene_interaction(U,0,N_spin_orbital_)
     res=optimize(p->(set_para(model_n3,p);compute(model_n3)),get_para(model_n3))
     set_para(model_n3,res.minimizer)
-    compute(model_n3)
+    compute(model_n3;all_obs=true)
     @get_obs model_n3 Etotal Eloc Ek  nn Δασ Aασ_above Aασ_below αασ βασ  G12ασ Zασ
     data=[U,  Etotal,  Eloc, Ek,  nn[1], Δασ[1], Aασ_above[1], Aασ_below[1], αασ[1][1], βασ[1][1],  G12ασ[1], Zασ[1]]
     push!(results,data)
@@ -53,7 +53,7 @@ for U in Us
     model_n2.interaction=gene_interaction(U,0,N_spin_orbital_)
     res=optimize(p->(set_para(model_n2,p);compute(model_n2)),get_para(model_n2))
     set_para(model_n2,res.minimizer)
-    compute(model_n2)
+    compute(model_n2;all_obs=true)
     @get_obs model_n2 Etotal Eloc Ek  nn Zασ
     data=[U,  Etotal,  Eloc, Ek,  nn[1],Zασ[1]]
     push!(results,data)

@@ -1,11 +1,12 @@
-for ntotal_ in ntotals
-    print("processing ntotal=$(ntotal_)\n")
-    model_n2=create_one_band_doped(ntotal_/2,Us[1],2)
-    set_para(model_n2,[-0.1])
+for U in Us
+    para_doped_dict=load_object("$(data_dir)/one_band_dmu_U_$(U)_para.jld2")
+    Δμs=UtoΔμsReverse[U]
+    set_para(model_n3,para_doped_dict[Δμs[1]])
     results=[]
-    for U in Us
-        print("processing U=$(U)\n")
-        push!(results,solve_n2(model_n2,U))
+    for Δμ in Δμs
+        print("processing $(U) $(Δμ)\n")
+        data=solve_n3_Δμ(model_n3,U,Δμ)
+        push!(results,[Δμ,data...])
     end
-    saveData(results,"$(data_dir)/result_n2_ntotal_$(ntotal_).dat")
-end    
+    saveData(results,"$(data_dir)/one_band_U_$(U)_dmu_result_n3_reverse.dat")
+end

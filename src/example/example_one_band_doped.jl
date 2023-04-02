@@ -27,10 +27,12 @@ function solve_n3(model_n3,U)
     model_n3.interaction=gene_interaction(U,0,model.N_spin_orbital)
     res=optimize(p->(set_para(model_n3,p);compute(model_n3)),get_para(model_n3))
     set_para(model_n3,res.minimizer)
-    compute(model_n3)
+    compute(model_n3;all_obs=true)
     @get_obs model_n3 Etotal Eloc Ek  nn Δασ Aασ_above Aασ_below αασ βασ  G12ασ Zασ
     data=[U,  Etotal,  Eloc, Ek,  nn[1], Δασ[1], Aασ_above[1], Aασ_below[1], αασ[1][1], βασ[1][1],  G12ασ[1], Zασ[1]]
 end
+
+
 
 
 Us=0.5:0.1:10.0
@@ -51,7 +53,7 @@ function solve_n2(model_n2,U)
     model_n2.interaction=gene_interaction(U,0,model_n2.N_spin_orbital)
     res=optimize(p->(set_para(model_n2,p);compute(model_n2)),get_para(model_n2))
     set_para(model_n2,res.minimizer)
-    compute(model_n2)
+    compute(model_n2;all_obs=true)
     @get_obs model_n2 Etotal Eloc Ek  nn Zασ
     data=[U,  Etotal,  Eloc, Ek,  nn[1],Zασ[1]]
 end
@@ -68,3 +70,5 @@ for ntotal_ in ntotals
     end
     saveData(results,"$(data_dir)/result_n2_ntotal_$(ntotal_).dat")
 end    
+
+
