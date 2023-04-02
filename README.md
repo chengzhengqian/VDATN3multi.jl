@@ -9,7 +9,7 @@ To start with, include the vdat.jl. The following code assumes current path is <
 https://github.com/chengzhengqian/VDATN3multi.jl/blob/8afb25f6b68dfad11e288ed0479c6095f79ed17c/src/example/example_one_band_half.jl#L3
 
 ### One-band Hubbard model at half-filling
-To start with, let's solve the one band Hubbard on a d=\infty Bethe lattice. There are two modes to work with, the fixed density mode and the free density mode. In fixed density mode, one can specify the density for each spin orbital, and VDAT automatically constrains the variational parameters to satifies the given densities. For example, it is useful to examine the half-filling case, which exhibits the metal-insulator transition at some critical U.
+To start with, let's solve the one band Hubbard on a d=\infty Bethe lattice. There are two modes to work with, the fixed density mode and the free density mode. In fixed density mode, one can specify the density for each spin orbital, and VDAT automatically constrains the variational parameters to satify the given densities. For example, we start with half-filling case, which exhibits the metal-insulator transition at some critical U.
 To perform the VDAT calculation, we need to build an instance of Model, which can be created with create_model.
 https://github.com/chengzhengqian/VDATN3multi.jl/blob/8afb25f6b68dfad11e288ed0479c6095f79ed17c/src/example/example_one_band_half.jl#L5-L15
 
@@ -84,7 +84,8 @@ And we can plot the density as a function of chemical potential for U=1.0,2.0,..
 ![plot](./src/example/figures/one_band_n_dmu_from_half.png)
 
 We could see that because we start calculation from half-filling, the calculation stucks at some local minimum and requires larger chemical potential to push system away from half-filling. To address this problem, we could start from some point where the system is already away from half-filling and decrease the chemical potential, and we found this yields the correct gap for N=3. 
-The density as a function of chemical potential for U=1.0,2.0,...,9.0 for one-band Hubbard model. ( N=3(reverse) means that we start from a doped regime and decrease the chemical potential, where N=3 means we start from the half-filling and increase the chemical potential)
+
+The density as a function of chemical potential for U=1.0,2.0,...,9.0 for one-band Hubbard model. N=3(reverse) means that the calculation starts from a doped regime and decrease the chemical potential, while N=3 means the calculation starts from half-filling and increase the chemical potential.
 
 ![plot](./src/example/figures/one_band_n_dmu_from_half_reverse.png)
 
