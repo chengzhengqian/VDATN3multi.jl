@@ -108,6 +108,33 @@ The density as a function of chemical potential for U=1.0,2.0,...,9.0 for one-ba
 
 ### One-band model at given magnetic field
 
+Similar to the case with given chemical potential, we can solve the model at a given magnetic field.
+
+https://github.com/chengzhengqian/VDATN3multi.jl/blob/c3e0a1b64ecee3c148de2e20cd941e6a85f0e195/src/example/example_one_band_magnetic_field.jl#L8-L20
+
+Here, we set chemical_potential_=[(1,U/2+B),(2,U/2-B)] so the total density is 1.
+We first check the results for B=0, which should yield n_up=n_dn=0.5. So we can plot the deviations of the dnesity for each spin orbital from the exact value.
+
+![plot](./src/example/figures/one_band_B_0_dn_U.png)
+
+We can also plot the deviation of the total density and magnetization from the exact value.
+
+![plot](./src/example/figures/one_band_B_0_dn_M_U.png)
+
+We can see the amplitude of deviations relates to the susceptibility of corresponding observables.
+
+We can also check the double occupancy vs U/t with the fixed density approach.
+
+![plot](./src/example/figures/one_band_B_0_fixed_check_d_U.png)
+
+
+Finally, we can plot the magnetization vs B/t for various U. Here, we assume the magnetic field B coupldes the system as -B*(n_up-n_dn) and magnetication M is defined as M=n_up-n_dn
+
+![plot](./src/example/figures/one_band_half_inf_M_B.png)
+
+
+
+
 
 
 
