@@ -128,7 +128,7 @@ We can also check the double occupancy vs U/t with the fixed density approach.
 ![plot](./src/example/figures/one_band_B_0_fixed_check_d_U.png)
 
 
-Finally, we can plot the magnetization vs B/t for various U. Here, we assume the magnetic field B coupldes the system as -B*(n_up-n_dn) and magnetication M is defined as M=n_up-n_dn
+Finally, we can plot the magnetization vs B/t for various U. Here, we assume the magnetic field B coupldes to the system as -B*(n_up-n_dn) and the magnetization M is defined as M=n_up-n_dn
 
 ![plot](./src/example/figures/one_band_half_inf_M_B.png)
 
