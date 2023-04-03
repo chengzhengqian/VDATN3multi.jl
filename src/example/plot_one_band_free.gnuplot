@@ -12,7 +12,7 @@ set xrange [0:10]
 set autoscale y
 set xlabel "U/t"
 set ylabel "{/Symbol D}n"
-plot n3filedmu0 u ($1):($5-0.5) w l t  "N=3"
+plot n3filedmu0 u ($1):($5-0.5) w l t  "{/Symbol D}{/Symbol m}=0"
 
 
 set terminal pngcairo size 800,600 linewidth 3 font ",20"

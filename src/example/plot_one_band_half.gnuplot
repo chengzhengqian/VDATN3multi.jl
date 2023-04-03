@@ -33,3 +33,5 @@ set output "./figures/one_band_half_Z_U.png"
 replot
 unset terminal
 
+#G12
+# plot n3file u 1:11 w l t "N=3" lc "red"

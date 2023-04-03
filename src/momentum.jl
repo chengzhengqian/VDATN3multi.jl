@@ -108,13 +108,15 @@ cal_nX_AX_KX_nkX_safe(esX,0.5,1.0,0.5)
 cal_nX_AX_KX_nkX_safe(esX,0.499999,1.0,0.5)
 cal_nX_AX_KX_nkX_safe(esX,0.0,1.0,0.5)
 cal_nX_AX_KX_nkX_safe(esX,0.0001,1.0,0.2)
+esX,nX,βX,weightX=eabove,nabove,βabove,1-nασ_
+!! we setup some cutoff to solve problem. When nX_mean ->0 or 1 within nX_mean_cutoff, we assume density is flat
 """
-function cal_nX_AX_KX_nkX_safe(esX,nX,βX,weightX)
+function cal_nX_AX_KX_nkX_safe(esX,nX,βX,weightX;nX_mean_cutoff=1e-6)
     if(weightX==0.0)
         return cal_nX_AX_KX_nkX_with_nX_mean(0.5,esX,0.0)
     else
         nX_mean=nX/weightX
-        if(nX_mean==0.0 || nX_mean==1.0)
+        if(nX_mean<nX_mean_cutoff || nX_mean>1.0-nX_mean_cutoff)
             return cal_nX_AX_KX_nkX_with_nX_mean(nX_mean,esX,weightX)
         else
             return cal_nX_AX_KX_nkX_with_nX(esX,nX,βX,weightX)
@@ -126,15 +128,15 @@ end
 including the limiting case, we don't save αασ now, we can provide a function to compute it if the user wants.
 nασ_,Δασ_,βασ_,eασ_=nασ[i],Δασ[i],βασ[i],eασ[i]
 """
-function cal_Abelow_Aabove_Kbelow_Kabove_nk_safe(nασ_,Δασ_,βασ_,eασ_)
+function cal_Abelow_Aabove_Kbelow_Kabove_nk_safe(nασ_,Δασ_,βασ_,eασ_;nX_mean_cutoff=1e-6)
     βbelow,βabove=βασ_
     ebelow,eabove=eασ_
     nbelow=nασ_-Δασ_
     nabove=Δασ_
     # αbelow=solve_αX_from_nX(ebelow,nbelow,βbelow,nασ_)
     # αabove=solve_αX_from_nX(eabove,nabove,βabove,1-nασ_)
-    nbelowcheck,Abelow,Kbelow,nkbelow=cal_nX_AX_KX_nkX_safe(ebelow,nbelow,βbelow,nασ_)
-    nabovecheck,Aabove,Kabove,nkabove=cal_nX_AX_KX_nkX_safe(eabove,nabove,βabove,1-nασ_)
+    nbelowcheck,Abelow,Kbelow,nkbelow=cal_nX_AX_KX_nkX_safe(ebelow,nbelow,βbelow,nασ_;nX_mean_cutoff=nX_mean_cutoff)
+    nabovecheck,Aabove,Kabove,nkabove=cal_nX_AX_KX_nkX_safe(eabove,nabove,βabove,1-nασ_;nX_mean_cutoff=nX_mean_cutoff)
     Abelow,Aabove,Kbelow,Kabove,[nkbelow,nkabove]
 end
 
@@ -149,4 +151,27 @@ function cal_αασ_(nασ_,Δασ_,βασ_,eασ_)
     αbelow=solve_αX_from_nX(ebelow,nbelow,βbelow,nασ_)
     αabove=solve_αX_from_nX(eabove,nabove,βabove,1-nασ_)
     [αbelow,αabove]
+end
+
+
+"""
+as in some cases, nX->0 or 1, 
+esX,nX,βX,weightX=ebelow,nbelow,βbelow,nασ_
+esX,nX,βX,weightX=eabove,nabove,βabove,1-nασ_
+and in this case, we may just return αX 0.0 (maybe Inf to simplfy the problem saving to txt)
+μX=0.0
+"""
+function cal_αX_nμX(esX,nX,βX,weightX,μX;nX_mean_cutoff=1e-6)
+    if(weightX==0.0)
+        return (0.0, 0.5)
+    else
+        nX_mean=nX/weightX
+        if(nX_mean<nX_mean_cutoff || nX_mean>1.0-nX_mean_cutoff)
+            return (0.0, nX_mean)
+        else
+            αX=solve_αX_from_nX(esX,nX,βX,weightX)
+            nμX=cal_nk(αX,βX,μX)
+            return (αX,nμX)
+        end
+    end
 end

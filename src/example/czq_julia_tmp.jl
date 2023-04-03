@@ -1,12 +1,13 @@
 for U in Us
-    para_doped_dict=load_object("$(data_dir)/one_band_dmu_U_$(U)_para.jld2")
-    Δμs=UtoΔμsReverse[U]
-    set_para(model_n3,para_doped_dict[Δμs[1]])
+    set_para(model_n3,para_dict[U])
     results=[]
-    for Δμ in Δμs
-        print("processing $(U) $(Δμ)\n")
-        data=solve_n3_Δμ(model_n3,U,Δμ)
-        push!(results,[Δμ,data...])
+    para_B_dict=Dict()
+    for B in UtoBs[U]
+        print("processing $(U) $(B)\n")
+        data=solve_n3_half_filling_magnetic_field(model_n3,U,B)
+        para_B_dict[B]=get_para(model_n3)
+        push!(results,[B,data...])
     end
-    saveData(results,"$(data_dir)/one_band_U_$(U)_dmu_result_n3_reverse.dat")
+    save_object("$(data_dir)/one_band_half_B_U_$(U)_para.jld2",para_B_dict)
+    saveData(results,"$(data_dir)/one_band_half_B_U_$(U)_result_n3.dat")
 end

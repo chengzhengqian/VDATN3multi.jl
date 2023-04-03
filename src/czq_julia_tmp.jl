@@ -1,1 +1,1 @@
-        Zασ=[cal_nk(αασ[i][1],βασ[i][1],μασ[i])-cal_nk(αασ[i][2],βασ[i][2],μασ[i]) for i in 1:model.N_spin_orbital]
+    G12ασ=restrict_G12ασ_.(G12ασ)

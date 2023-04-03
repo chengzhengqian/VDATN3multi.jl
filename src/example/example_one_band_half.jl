@@ -13,7 +13,7 @@ chemical_potential_=[]
 model_n3=create_model(N_spin_orbital_,symmetry_,n_target_,
                       interaction_,chemical_potential_,e_fns_;
                       particle_hole_symmetric=true,N_time_step=3)
-
+set_para(model_n3,[0.37,0.6,-0.1])
 results=[]
 Us=1.0:0.1:10.0
 # U=1.0  model=model_n3   model_n3.obs

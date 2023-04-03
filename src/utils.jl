@@ -247,6 +247,25 @@ function restrict_Slocασ(Slocασ;cutoff=1e-5)
 end
 
 """
+G12ασ should with (0,0.5)
+make it a option later
+restrict_G12ασ_(0.49)
+restrict_G12ασ_(0.491)
+restrict_G12ασ_(0.208)
+restrict_G12ασ_(-100)
+"""
+function restrict_G12ασ_(G12ασ_)
+    if(G12ασ_>0.49)
+        0.49+0.01*(1-exp(-(G12ασ_-0.49)/0.01))
+    elseif (G12ασ_<0.21)
+        0.21-0.01*(1-exp(-(0.21-G12ασ_)/0.01))
+    else
+        G12ασ_
+    end    
+end
+
+
+"""
 compute charge fluctuation
 remove the previous redundant nασ signature
 """
