@@ -90,3 +90,25 @@ compute(model)
 # end
 
 
+# use
+
+# check fix density mode, using
+
+include("./vdat.jl")
+
+N_spin_orbital_=2
+symmetry_=[[1,2]]
+n_target_=[0.5]
+e_fn=gene_spline_band("./es_files/es_inf.dat")
+e_fns_=[e_fn]
+U=1.0
+interaction_=gene_interaction(U,0,N_spin_orbital_)
+chemical_potential_=[]
+model_n3=create_model(N_spin_orbital_,symmetry_,n_target_,
+                      interaction_,chemical_potential_,e_fns_;
+                      particle_hole_symmetric=true,N_time_step=3,w_mode="fix",N_w_para_fixed=1,cal_w_fixed=cal_w_fixed_one_band_half)
+
+model_n3.options
+model=model_n3
+model.obs
+model.options

@@ -23,8 +23,10 @@ add w_mode=="free"
 cal_Eeff=cal_Eeff_test,N_Ueff=0
 # we now rename it from create_model_N3 to create_model
 so we could include N=2
+# w_mode="fix", similar to "fluc", but uses customized function to construct w (notice in free, we map to u)
+
 """
-function create_model(N_spin_orbital,symmetry,n_target,interaction,chemical_potential,e_fns;particle_hole_symmetric=false,w_mode="fluc",cal_Eeff=cal_Eeff_test,N_Ueff=0,N_time_step=3)
+function create_model(N_spin_orbital,symmetry,n_target,interaction,chemical_potential,e_fns;particle_hole_symmetric=false,w_mode="fluc",cal_Eeff=cal_Eeff_test,N_Ueff=0,N_time_step=3, cal_w_fixed=cal_w_fixed_test,N_w_para_fixed=0)
     N_symmetry=length(symmetry)
     # for place holder
     if(N_time_step==3)
@@ -57,6 +59,13 @@ function create_model(N_spin_orbital,symmetry,n_target,interaction,chemical_pote
         w_para=zeros(N_symmetry+N_Ueff)
         if(length(n_target)>0)
             error("w_mode is $(w_mode), so there should be no constraint on density, but n_target is $(n_target)!")
+        end
+    elseif(w_mode=="fix")
+        w_para=zeros(N_w_para_fixed)
+        options["N_w_para_fixed"]=N_w_para_fixed
+        options["cal_w_fixed"]=cal_w_fixed
+        if(length(n_target)!=N_symmetry)
+            error("w_mode is $(w_mode), so there should be $(N_symmetry) constraints on density, but n_target is $(n_target)!")
         end        
     else
         error("w_mode $(w_mode) is not supported!")
@@ -193,6 +202,13 @@ function compute_local(model::Model)
         Vwu_mat=cal_Vwu_mat(G12ασ)
         Vwu=kron(Vwu_mat...)
         w=Vwu*u
+        w=w/sqrt(sum(w.^2))
+    elseif(option_w_mode(model)=="fix")
+        w_para_fixed=model.w_para 
+        @get_obs model nασ
+        neffασ=cal_neffασ(nασ,G12ασ)
+        cal_w_fixed=model.options["cal_w_fixed"]
+        w=cal_w_fixed(neffασ,w_para_fixed)
         w=w/sqrt(sum(w.^2))
     else
         error("w_mode $(option_w_mode(model)) is not supported")

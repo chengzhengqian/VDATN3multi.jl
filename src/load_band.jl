@@ -3,9 +3,10 @@
 """
 inf_fn=gene_spline_band("./es_inf.dat")
 d2_fn=gene_spline_band("./es_2d.dat")
+filename="./es_files/es_inf.dat"
 """
-function gene_spline_band(filename)
-    data=reshape(loadData(filename),:)
+function gene_spline_band(filename;scale=1.0)
+    data=reshape(loadData(filename),:)*scale
     N_sample=size(data)[1]
     index=collect(linspace(0,1,N_sample))
     return Spline1D(index,data)

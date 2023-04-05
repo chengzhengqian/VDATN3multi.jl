@@ -31,6 +31,9 @@ include("./w_fluc.jl")
 # !! we remove the uniform transform part, this is mainly for the free density case.  
 include("./w_free.jl")
 
+# fixed density mode, using customize function, we leave the duty to fix the density to the user, (though provide some scheme to fixed the density later)
+include("./w_fix.jl")
+
 # momentum part; we should remove the derivatives part, check the original version for how to compute derivatives
 include("./momentum.jl")
 
