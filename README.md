@@ -130,7 +130,7 @@ Finally, we can plot the magnetization vs B/t for various U. Here, we assume the
 ![plot](./src/example/figures/one_band_half_inf_M_B.png)
 
 
-### Two-band Hubbard model at half-filling and selective-orbital Mott transition
+### Two-band Hubbard model at half-filling and orbital selective Mott transition
 It is straightforward to generalize the above code to solve the multi-orbital problem. However, one should use more sophisticated parametrization of the local projector to ensure an efficient minimization. Based on experience, it turns out using Jastrow-like projector is much more stable than the fluctuation based projectors (the default way). In this part, we use a two-orbital Hubbard model to illustrate the ideas.
 
 https://github.com/chengzhengqian/VDATN3multi.jl/blob/da50ddd6feebc176661328edee9e37690b75c4e2/src/example/example_two_band_half.jl#L29-L43
