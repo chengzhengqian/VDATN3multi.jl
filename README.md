@@ -98,9 +98,6 @@ And we can plot the density as a function of chemical potential for U=1.0,2.0,..
 
 ![plot](./src/example/figures/one_band_n_dmu_from_half.png)
 
-
-We could see that because we start calculation from half-filling, the calculation stucks at some local minimum and requires larger chemical potential to push system away from half-filling. To address this problem, we could start from some point where the system is already away from half-filling and decrease the chemical potential, and we found this yields the correct gap for N=3. 
-
 The density as a function of chemical potential for U=1.0,2.0,...,9.0 for one-band Hubbard model. N=3(reverse) means that the calculation starts from a doped regime and decrease the chemical potential, while N=3 means the calculation starts from half-filling and increase the chemical potential.
 
 ![plot](./src/example/figures/one_band_n_dmu_from_half_reverse.png)
@@ -131,6 +128,46 @@ We can also check the double occupancy vs U/t with the fixed density approach.
 Finally, we can plot the magnetization vs B/t for various U. Here, we assume the magnetic field B coupldes to the system as -B*(n_up-n_dn) and the magnetization M is defined as M=n_up-n_dn
 
 ![plot](./src/example/figures/one_band_half_inf_M_B.png)
+
+
+### two-band Hubbard model at half-filling and selective-orbital Mott transition
+It is straightforward to generalize the above code to solve the multi-orbital problem. However, one should use more sophisticated way to parametrize the local projector to ensure an efficient minimization. Based on the experience, it turns out using Jastrow-like projector is much more stable than the fluctuation based projectors (the default way). In this part, we use a two-orbital Hubbard model to illustrate the ideas.
+
+https://github.com/chengzhengqian/VDATN3multi.jl/blob/da50ddd6feebc176661328edee9e37690b75c4e2/src/example/example_two_band_half.jl#L29-L43
+
+Notice we should pass the following options to create_model: w_mode="fix",N_w_para_fixed=3,cal_w_fixed=cal_w_fixed_two_band_half
+The key function is cal_w_fixed_two_band_half, which is defined as 
+
+https://github.com/chengzhengqian/VDATN3multi.jl/blob/da50ddd6feebc176661328edee9e37690b75c4e2/src/example/example_two_band_half.jl#L8-L12
+
+In general, one should pass a function with signature (neffασ,w_para) -> w, where neffασ=(n1,n2,n_N_spin_orb) and the return value w should be constrained by neffασ. In addition, one should pass N_w_para_fixed, which is the size of w_para.
+
+Now, we can solve a two-band Hubbard model with t1 and t2 as the hopping parameters for the first and second band.
+
+To probe the metal insulator transition, we plot the quasi-particle weights for the two bands vs U.
+
+t1/t2="0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0"
+![plot](./src/example/figures/two_band_half_inf_Z_U_t1_t2_0.2_1.0.png)
+
+t1/t2="0.2 0.21 0.22 0.23 0.24 0.25 0.26 0.27 0.28 0.29 0.3"
+![plot](./src/example/figures/two_band_half_inf_Z_U_t1_t2_0.2_0.3.png)
+
+t1/t2="0.1 0.11 0.12 0.13 0.14 0.15 0.16 0.17 0.18 0.19 0.2"
+![plot](./src/example/figures/two_band_half_inf_Z_U_t1_t2_0.1_0.2.png)
+
+
+Interestingly, we find that for t1/t2 >=0.25, two bands simultaneously enter the Mott phase, where for t1/t2 <=0.25, two bands have two different transition values and the difference between two values increases when t1/t2 decreases.
+
+We can also gain insights by inspecting the density-density correlation for different t1/t2.
+
+![plot](./src/example/figures/two_band_half_inf_nn_U_t1_t2_0.9_1.0.png)
+![plot](./src/example/figures/two_band_half_inf_nn_U_t1_t2_0.5_1.0.png)
+![plot](./src/example/figures/two_band_half_inf_nn_U_t1_t2_0.3_1.0.png)
+![plot](./src/example/figures/two_band_half_inf_nn_U_t1_t2_0.25_1.0.png)
+![plot](./src/example/figures/two_band_half_inf_nn_U_t1_t2_0.2_1.0.png)
+![plot](./src/example/figures/two_band_half_inf_nn_U_t1_t2_0.15_1.0.png)
+![plot](./src/example/figures/two_band_half_inf_nn_U_t1_t2_0.1_1.0.png)
+
 
 
 
