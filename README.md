@@ -140,7 +140,7 @@ The key function is cal_w_fixed_two_band_half, which is defined as
 
 https://github.com/chengzhengqian/VDATN3multi.jl/blob/da50ddd6feebc176661328edee9e37690b75c4e2/src/example/example_two_band_half.jl#L8-L12
 
-In general, one should pass a function with signature (neffασ,w_para) -> w, where neffασ=(n1,n2,n_N_spin_orb) and the return value w should be constrained by neffασ. In addition, one should pass N_w_para_fixed, which is the size of w_para.
+In general, one should pass a function with signature (neffασ,w_para) -> w, where neffασ=(n1,n2,...,n_N_spin_orb) and the return value w should be constrained by neffασ. In addition, one should pass N_w_para_fixed, which is the size of w_para.
 
 Now, we can solve a two-band Hubbard model with t1 and t2 as the hopping parameters for the first and second band.
 
