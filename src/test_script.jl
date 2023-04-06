@@ -96,6 +96,12 @@ compute(model)
 
 include("./vdat.jl")
 
+function cal_w_fixed_one_band_half(neffασ,w_para)
+    Ueff=w_para[1]
+    [exp(-Ueff),1,1,exp(-Ueff)]
+end
+
+
 N_spin_orbital_=2
 symmetry_=[[1,2]]
 n_target_=[0.5]
@@ -112,3 +118,7 @@ model_n3.options
 model=model_n3
 model.obs
 model.options
+get_para(model_n3)
+set_para(model_n3,[0.37,1.0,0.5])
+compute(model_n3)
+model_n3.obs
