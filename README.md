@@ -130,8 +130,8 @@ Finally, we can plot the magnetization vs B/t for various U. Here, we assume the
 ![plot](./src/example/figures/one_band_half_inf_M_B.png)
 
 
-### two-band Hubbard model at half-filling and selective-orbital Mott transition
-It is straightforward to generalize the above code to solve the multi-orbital problem. However, one should use more sophisticated way to parametrize the local projector to ensure an efficient minimization. Based on the experience, it turns out using Jastrow-like projector is much more stable than the fluctuation based projectors (the default way). In this part, we use a two-orbital Hubbard model to illustrate the ideas.
+### Two-band Hubbard model at half-filling and orbital selective Mott transition
+It is straightforward to generalize the above code to solve the multi-orbital problem. However, one should use more sophisticated parametrization of the local projector to ensure an efficient minimization. Based on experience, it turns out using Jastrow-like projector is much more stable than the fluctuation based projectors (the default way). In this part, we use a two-orbital Hubbard model to illustrate the ideas.
 
 https://github.com/chengzhengqian/VDATN3multi.jl/blob/da50ddd6feebc176661328edee9e37690b75c4e2/src/example/example_two_band_half.jl#L29-L43
 
@@ -140,7 +140,7 @@ The key function is cal_w_fixed_two_band_half, which is defined as
 
 https://github.com/chengzhengqian/VDATN3multi.jl/blob/da50ddd6feebc176661328edee9e37690b75c4e2/src/example/example_two_band_half.jl#L8-L12
 
-In general, one should pass a function with signature (neffασ,w_para) -> w, where neffασ=(n1,n2,n_N_spin_orb) and the return value w should be constrained by neffασ. In addition, one should pass N_w_para_fixed, which is the size of w_para.
+In general, one should pass a function with signature (neffασ,w_para) -> w, where neffασ=(n1,n2,...,n_N_spin_orb) and the return value w should be constrained by neffασ. In addition, one should pass N_w_para_fixed, which is the size of w_para.
 
 Now, we can solve a two-band Hubbard model with t1 and t2 as the hopping parameters for the first and second band.
 
