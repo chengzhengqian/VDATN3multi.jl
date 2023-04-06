@@ -198,8 +198,19 @@ Quasi-particle weight for first and second bands vs U/t2 for t1/t2=0.1, 0.2, 0.3
 
 
 
+We can see that when t1/t2<0.5, the transition for the first band is now become continuous. Moreover, for J/U=0.25 and t1/t2=0.1, the critical value of MIT for the first band is similar to the one-band critical value, i.e 5.6*0.1, but the second band still has non-trivial differences from one band behavior. To further explore these observations, we plot the density-density correlation functions vs U for various t1/t2 with J/U=0.25.
 
+Density-density correlation functions vs U for t1/t2=0.9 with J/U=0.25.
 
+![plot](./src/example/figures/two_band_half_inf_nn_U_t1_t2_0.9_1.0_J_U_0.25.png)
+
+Density-density correlation functions vs U for t1/t2=0.5 with J/U=0.25.
+
+![plot](./src/example/figures/two_band_half_inf_nn_U_t1_t2_0.5_1.0_J_U_0.25.png)
+
+Density-density correlation functions vs U for t1/t2=0.3 with J/U=0.25.
+
+![plot](./src/example/figures/two_band_half_inf_nn_U_t1_t2_0.3_1.0_J_U_0.25.png)
 
 
 
