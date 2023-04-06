@@ -208,9 +208,9 @@ Density-density correlation functions vs U for t1/t2=0.5 with J/U=0.25.
 
 ![plot](./src/example/figures/two_band_half_inf_nn_U_t1_t2_0.5_1.0_J_U_0.25.png)
 
-Density-density correlation functions vs U for t1/t2=0.3 with J/U=0.25.
+Density-density correlation functions vs U for t1/t2=0.1 with J/U=0.25.
 
-![plot](./src/example/figures/two_band_half_inf_nn_U_t1_t2_0.3_1.0_J_U_0.25.png)
+![plot](./src/example/figures/two_band_half_inf_nn_U_t1_t2_0.1_1.0_J_U_0.25.png)
 
 
 
