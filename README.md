@@ -169,7 +169,48 @@ We can also gain insights by inspecting the density-density correlation for diff
 ![plot](./src/example/figures/two_band_half_inf_nn_U_t1_t2_0.1_1.0.png)
 
 
+### Two-band Hubbard model at half-filling with Hund's coupling J and orbital selective Mott transition
+In the previous section, we have discussed how the ratio of two bands, i.e, t1/t2, influences the transition value of MIT. Interestingly, we find that when t1/t2>0.25, two band have the same Uc, and when t1/t2<0.25, Uc for two bands becomes different, and system exhibits an orbital selective Mott transition. Moreover, when t1/t2->0, the second band behaves like an one-band model, while still have a non-trivial effect on the first band.
 
+Now, we turn on J to see how J/U influences MIT. To parametrize the local projector, we introduce 4 independent interacting variational parameters.
+
+https://github.com/chengzhengqian/VDATN3multi.jl/blob/aa904456b8db9aa8badab5e057b7fdacd3b20559/src/example/example_two_band_half_with_J.jl#L20-L23
+
+Moreover, we pass J to generate the interactions (notice we ignore the spin-flip and pair-hopping terms)
+
+https://github.com/chengzhengqian/VDATN3multi.jl/blob/aa904456b8db9aa8badab5e057b7fdacd3b20559/src/example/example_two_band_half_with_J.jl#L45-L52
+
+Quasi-particle weight for first and second bands vs U/t2 for t1/t2=0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0 and J/U=0.05
+
+![plot](./src/example/figures/two_band_half_inf_Z_U_t1_t2_0.1_1.0_J_U_0.05.png)
+
+
+Interestingly, we found that the system has an orbital selective Mott transition (OSMT) when t1/t2<0.5, in constrast to the case of J/U=0 where t1/t2<0.25 is necessary for OMST.
+
+
+Quasi-particle weight for first and second bands vs U/t2 for t1/t2=0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0 and J/U=0.1
+
+![plot](./src/example/figures/two_band_half_inf_Z_U_t1_t2_0.1_1.0_J_U_0.1.png)
+
+Quasi-particle weight for first and second bands vs U/t2 for t1/t2=0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0 and J/U=0.25
+
+![plot](./src/example/figures/two_band_half_inf_Z_U_t1_t2_0.1_1.0_J_U_0.25.png)
+
+
+
+We can see that when t1/t2<0.5, the transition for the first band is now become continuous. Moreover, for J/U=0.25 and t1/t2=0.1, the critical value of MIT for the first band is similar to the one-band critical value, i.e 5.6*0.1, but the second band still has non-trivial differences from one band behavior. To further explore these observations, we plot the density-density correlation functions vs U for various t1/t2 with J/U=0.25.
+
+Density-density correlation functions vs U for t1/t2=0.9 with J/U=0.25.
+
+![plot](./src/example/figures/two_band_half_inf_nn_U_t1_t2_0.9_1.0_J_U_0.25.png)
+
+Density-density correlation functions vs U for t1/t2=0.5 with J/U=0.25.
+
+![plot](./src/example/figures/two_band_half_inf_nn_U_t1_t2_0.5_1.0_J_U_0.25.png)
+
+Density-density correlation functions vs U for t1/t2=0.1 with J/U=0.25.
+
+![plot](./src/example/figures/two_band_half_inf_nn_U_t1_t2_0.1_1.0_J_U_0.25.png)
 
 
 
