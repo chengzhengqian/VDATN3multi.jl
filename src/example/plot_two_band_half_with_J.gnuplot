@@ -13,6 +13,7 @@ set ylabel "Z_{/Symbol a}"
 set key right top
 
 t1s="0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0"
+# t1s="0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0"
 # J_U="0.05"
 # J_U="0.1"
 J_U="0.25"
@@ -73,3 +74,4 @@ set terminal pngcairo size 800,600 linewidth 1 font ",20"
 set output "./figures/two_band_half_inf_nn_U_t1_t2_".t1s."_1.0_J_U_".J_U.".png"
 replot
 unset terminal
+

@@ -2,10 +2,10 @@ set terminal qt size 800,600  font ",20"
 
 
 n3file="./data_one_band_half/result_n3.dat"
-# data=[U,  Etotal,  Eloc, Ek,  nn[1], Δασ[1], Aασ_above[1], Aασ_below[1], αασ[1][1], βασ[1][1],  G12ασ[1], Zασ[1]]
+# data=[U,  Etotal,  Eloc, Ek,  nn[1], Δασ[1], Aασ_above[1], Aασ_below[1], aασ[1][1], bασ[1][1],  G12ασ[1], Zασ[1]]
 
 n3fileB0="./data_one_band_magnetic_field/one_band_half_B_0_result_n3.dat"
-    # data=[U,  Etotal,  Eloc, Ek,  nασ[1],nασ[2], nn[1], Δασ[1],Δασ[2], Aασ_above[1], Aασ_above[2], Aασ_below[1],Aασ_below[2], αασ[1][1],αασ[1][2],βασ[1][1],βασ[1][2],  G12ασ[1],G12ασ[2], Zασ[1], Zασ[2]]
+    # data=[U,  Etotal,  Eloc, Ek,  nασ[1],nασ[2], nn[1], Δασ[1],Δασ[2], Aασ_above[1], Aασ_above[2], Aασ_below[1],Aασ_below[2], aασ[1][1],aασ[1][2],bασ[1][1],bασ[1][2],  G12ασ[1],G12ασ[2], Zασ[1], Zασ[2]]
 
 # we first check the density
 set key left bottom
@@ -46,7 +46,7 @@ replot
 unset terminal
 
 n3fileB(U)="./data_one_band_magnetic_field/one_band_half_B_U_".U."_result_n3.dat"
-    # [B,U,  Etotal,  Eloc, Ek,  nασ[1],nασ[2], nn[1], Δασ[1],Δασ[2], Aασ_above[1], Aασ_above[2], Aασ_below[1],Aασ_below[2], αασ[1][1],αασ[1][2],βασ[1][1],βασ[1][2],  G12ασ[1],G12ασ[2], Zασ[1], Zασ[2]]
+    # [B,U,  Etotal,  Eloc, Ek,  nασ[1],nασ[2], nn[1], Δασ[1],Δασ[2], Aασ_above[1], Aασ_above[2], Aασ_below[1],Aασ_below[2], aασ[1][1],aασ[1][2],bασ[1][1],bασ[1][2],  G12ασ[1],G12ασ[2], Zασ[1], Zασ[2]]
 dmftB(U)="./dmft_data/one_band_inf_mag_h_u_".U.".txt"
 
 Us="1.0 2.0 3.0 4.0 8.0"

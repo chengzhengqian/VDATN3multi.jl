@@ -50,7 +50,7 @@ function solve_model(model_n3,U)
     res=optimize(p->(set_para(model_n3,p);compute(model_n3)),get_para(model_n3))
     set_para(model_n3,res.minimizer)
     compute(model_n3;all_obs=true)
-    @get_obs model_n3 Etotal Eloc Ek  nn Δασ Aασ_above Aασ_below αασ βασ  G12ασ Zασ
+    @get_obs model_n3 Etotal Eloc Ek  nn Δασ Aασ_above Aασ_below aασ bασ  G12ασ Zασ
     data=[U,  Etotal,  Eloc, Ek,  nn..., Δασ[[1,3]]..., Aασ_above[[1,3]]..., Aασ_below[[1,3]]..., G12ασ[[1,3]]..., Zασ[[1,3]]...]
 end
 

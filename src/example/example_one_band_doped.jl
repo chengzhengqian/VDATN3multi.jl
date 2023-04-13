@@ -28,8 +28,8 @@ function solve_n3(model_n3,U)
     res=optimize(p->(set_para(model_n3,p);compute(model_n3)),get_para(model_n3))
     set_para(model_n3,res.minimizer)
     compute(model_n3;all_obs=true)
-    @get_obs model_n3 Etotal Eloc Ek  nn Δασ Aασ_above Aασ_below αασ βασ  G12ασ Zασ
-    data=[U,  Etotal,  Eloc, Ek,  nn[1], Δασ[1], Aασ_above[1], Aασ_below[1], αασ[1][1], βασ[1][1],  G12ασ[1], Zασ[1]]
+    @get_obs model_n3 Etotal Eloc Ek  nn Δασ Aασ_above Aασ_below aασ bασ  G12ασ Zασ
+    data=[U,  Etotal,  Eloc, Ek,  nn[1], Δασ[1], Aασ_above[1], Aασ_below[1], aασ[1][1], bασ[1][1],  G12ασ[1], Zασ[1]]
 end
 
 

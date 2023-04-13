@@ -2,9 +2,9 @@ set terminal qt size 800,600  font ",20"
 
 
 n3file="./data_one_band_half/result_n3.dat"
-# data=[U,  Etotal,  Eloc, Ek,  nn[1], Δασ[1], Aασ_above[1], Aασ_below[1], αασ[1][1], βασ[1][1],  G12ασ[1], Zασ[1]]
+# data=[U,  Etotal,  Eloc, Ek,  nn[1], Δασ[1], Aασ_above[1], Aασ_below[1], aασ[1][1], bασ[1][1],  G12ασ[1], Zασ[1]]
 n3filedmu0="./data_one_band_free_density/one_band_dmu_0_result_n3.dat"
-# data=[U,  Etotal,  Eloc, Ek,  nασ[1], nn[1], Δασ[1], Aασ_above[1], Aασ_below[1], αασ[1][1], βασ[1][1],  G12ασ[1], Zασ[1]]
+# data=[U,  Etotal,  Eloc, Ek,  nασ[1], nn[1], Δασ[1], Aασ_above[1], Aασ_below[1], aασ[1][1], bασ[1][1],  G12ασ[1], Zασ[1]]
 
 
 # we first check the density
@@ -35,7 +35,7 @@ unset terminal
 # now, we plot
 n3filedmu(U)="./data_one_band_free_density/one_band_U_".U."_dmu_result_n3.dat"
 dmftfile(U)="./dmft_data/one_band_inf_n_mu_u_".U.".txt"
-# data=[ Δμ, U,  Etotal,  Eloc, Ek,  nασ[1], nn[1], Δασ[1], Aασ_above[1], Aασ_below[1], αασ[1][1], βασ[1][1],  G12ασ[1], Zασ[1]]
+# data=[ Δμ, U,  Etotal,  Eloc, Ek,  nασ[1], nn[1], Δασ[1], Aασ_above[1], Aασ_below[1], aασ[1][1], bασ[1][1],  G12ασ[1], Zασ[1]]
 
 
 set xlabel "{/Symbol D}{/Symbol m}/t"

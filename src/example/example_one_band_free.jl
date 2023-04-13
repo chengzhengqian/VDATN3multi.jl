@@ -28,9 +28,9 @@ function solve_n3_Δμ(model_n3,U,Δμ)
     res=optimize(p->(set_para(model_n3,p);compute(model_n3)),get_para(model_n3))
     set_para(model_n3,res.minimizer)
     compute(model_n3;all_obs=true)
-    @get_obs model_n3 Etotal Eloc Ek nασ  nn Δασ Aασ_above Aασ_below  αασ βασ  G12ασ  Zασ
+    @get_obs model_n3 Etotal Eloc Ek nασ  nn Δασ Aασ_above Aασ_below  aασ bασ  G12ασ  Zασ
     # we temperarily remove Z and α
-    data=[U,  Etotal,  Eloc, Ek,  nασ[1], nn[1], Δασ[1], Aασ_above[1], Aασ_below[1], αασ[1][1],βασ[1][1],  G12ασ[1], Zασ[1]]
+    data=[U,  Etotal,  Eloc, Ek,  nασ[1], nn[1], Δασ[1], Aασ_above[1], Aασ_below[1], aασ[1][1],bασ[1][1],  G12ασ[1], Zασ[1]]
 end
 
 

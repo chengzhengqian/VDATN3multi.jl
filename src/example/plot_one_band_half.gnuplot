@@ -1,7 +1,7 @@
 set terminal qt size 800,600  font ",20"
 
 n3file="./data_one_band_half/result_n3.dat"
-# data=[U,  Etotal,  Eloc, Ek,  nn[1], Δασ[1], Aασ_above[1], Aασ_below[1], αασ[1][1], βασ[1][1],  G12ασ[1], Zασ[1]]
+# data=[U,  Etotal,  Eloc, Ek,  nn[1], Δασ[1], Aασ_above[1], Aασ_below[1], aασ[1][1], bασ[1][1],  G12ασ[1], Zασ[1]]
 n2file="./data_one_band_half/result_n2.dat"
 # data=[U,  Etotal,  Eloc, Ek,  nn[1],Zασ[1]]
 

@@ -25,8 +25,8 @@ function solve_n3_half_filling_magnetic_field(model_n3,U,B)
     res=optimize(p->(set_para(model_n3,p);compute(model_n3)),get_para(model_n3))
     set_para(model_n3,res.minimizer)
     compute(model_n3;all_obs=true)
-    @get_obs model_n3 Etotal Eloc Ek nασ  nn Δασ Aασ_above Aασ_below  αασ βασ  G12ασ  Zασ
-    data=[U,  Etotal,  Eloc, Ek,  nασ[1],nασ[2], nn[1], Δασ[1],Δασ[2], Aασ_above[1], Aασ_above[2], Aασ_below[1],Aασ_below[2], αασ[1][1],αασ[1][2],βασ[1][1],βασ[1][2],  G12ασ[1],G12ασ[2], Zασ[1], Zασ[2]]
+    @get_obs model_n3 Etotal Eloc Ek nασ  nn Δασ Aασ_above Aασ_below  aασ bασ  G12ασ  Zασ
+    data=[U,  Etotal,  Eloc, Ek,  nασ[1],nασ[2], nn[1], Δασ[1],Δασ[2], Aασ_above[1], Aασ_above[2], Aασ_below[1],Aασ_below[2], aασ[1][1],aασ[1][2],bασ[1][1],bασ[1][2],  G12ασ[1],G12ασ[2], Zασ[1], Zασ[2]]
 end
 
 # we first solve the problem with B=0
