@@ -32,13 +32,13 @@ function create_model(N_spin_orbital,symmetry,n_target,interaction,chemical_pote
     if(N_time_step==3)
         G12_para=[0.4 for i in 1:N_symmetry]
         if(particle_hole_symmetric)
-            β_para=[1.0 for i in 1:N_symmetry]
+            b_para=[1.0 for i in 1:N_symmetry]
         else
-            β_para=[1.0 for i in 1:(2*N_symmetry)]
+            b_para=[1.0 for i in 1:(2*N_symmetry)]
         end
     elseif(N_time_step==2)
         G12_para=[0.5 for i in 1:N_symmetry]
-        β_para=[]               # for N=2, β=∞, we don't need
+        b_para=[]               # for N=2, β=∞, we don't need
     else
         error("unsupported N_time_step $(N_time_step)")
     end
@@ -70,7 +70,7 @@ function create_model(N_spin_orbital,symmetry,n_target,interaction,chemical_pote
     else
         error("w_mode $(w_mode) is not supported!")
     end
-    model=Model(N_time_step,N_spin_orbital,symmetry,n_target,w_para,G12_para,β_para,interaction,chemical_potential,e_fns,options,obs)
+    model=Model(N_time_step,N_spin_orbital,symmetry,n_target,w_para,G12_para,b_para,interaction,chemical_potential,e_fns,options,obs)
     # set options
     # set density mode
     if(length(n_target)>0)
@@ -97,7 +97,7 @@ para=get_para(model)
 """
 function get_para(model::Model)
     if(model.N_time_step==3)
-        [model.G12_para...,model.β_para...,model.w_para...]
+        [model.G12_para...,model.b_para...,model.w_para...]
     elseif(model.N_time_step==2)
         model.w_para
     else
@@ -112,11 +112,11 @@ set_para(model,para)
 function set_para(model::Model,para)
     if(model.N_time_step==3)
         N_G12=length(model.G12_para)
-        N_β=length(model.β_para)
+        N_b=length(model.b_para)
         N_w=length(model.w_para)
         model.G12_para[:]=para[1:N_G12]
-        model.β_para[:]=para[(1+N_G12):(N_G12+N_β)]
-        model.w_para[:]=para[(1+N_G12+N_β):(N_G12+N_β+N_w)]
+        model.b_para[:]=para[(1+N_G12):(N_G12+N_b)]
+        model.w_para[:]=para[(1+N_G12+N_b):(N_G12+N_b+N_w)]
     else
         model.w_para[:]=para
     end    
@@ -275,25 +275,25 @@ function compute_momentum(model::Model)
     # model.obs
     @get_obs model nασ Δασ eασ G12ασ g12ασ Slocασ pmatwασ w
     N_symmetry=length(model.symmetry)
-    if(length(model.β_para)==2*N_symmetry)
-        β_below_para=model.β_para[1:N_symmetry]
-        β_above_para=model.β_para[(1+N_symmetry):2*N_symmetry]
-    elseif(length(model.β_para)==N_symmetry)
-        β_below_para=β_above_para=model.β_para[1:N_symmetry]
+    if(length(model.b_para)==2*N_symmetry)
+        b_below_para=model.b_para[1:N_symmetry]
+        b_above_para=model.b_para[(1+N_symmetry):2*N_symmetry]
+    elseif(length(model.b_para)==N_symmetry)
+        b_below_para=b_above_para=model.b_para[1:N_symmetry]
     else
-        error("length of model.β_para is $(length(model.β_para)), which should be either $(2*N_symmetry) or $(N_symmetry) ")
+        error("length of model.b_para is $(length(model.b_para)), which should be either $(2*N_symmetry) or $(N_symmetry) ")
     end
-    βασ=extend_β(β_below_para,β_above_para,model.symmetry,model.N_spin_orbital)
+    bασ=extend_b(b_below_para,b_above_para,model.symmetry,model.N_spin_orbital)
     Aασ_below,Aασ_above,nk,Ekασ=[Array{Any}(undef,model.N_spin_orbital) for _ in 1:5]
-    # nασ,Δασ,βασ,eασ=model.obs["nασ"],model.obs["Δασ"],model.obs["βασ"],model.obs["eασ"]
-    # nασ,Δασ,βασ,eασ=0,0,0,0, to test
+    # nασ,Δασ,bασ,eασ=model.obs["nασ"],model.obs["Δασ"],model.obs["bασ"],model.obs["eασ"]
+    # nασ,Δασ,bασ,eασ=0,0,0,0, to test
     Ek=0 # kinetic energy
     # use the symmetry to simplify the calcuation, term=[1,2], term=[1], term=[2]
     for term in model.symmetry
         # just for debug, comment it later
-        # global Ek,Aασ_below,Aασ_above,αασ,nk
+        # global Ek,Aασ_below,Aασ_above,aασ,nk
         i=term[1]
-        Aασ_below_,Aασ_above_,Kbelow_,Kabove_,nk_=cal_Abelow_Aabove_Kbelow_Kabove_nk_safe(nασ[i],Δασ[i],βασ[i],eασ[i])
+        Aασ_below_,Aασ_above_,Kbelow_,Kabove_,nk_=cal_Abelow_Aabove_Kbelow_Kabove_nk_safe(nασ[i],Δασ[i],bασ[i],eασ[i])
         Ekασ_=Kbelow_+Kabove_
         Ek+=Ekασ_*length(term)
         for idx in term
@@ -324,9 +324,9 @@ function compute_momentum(model::Model)
     #     end        
     # end
     # we put this in a seperate function
-    # Zασ=[cal_nk(αασ[i][1],βασ[i][1],μασ[i])-cal_nk(αασ[i][2],βασ[i][2],μασ[i]) for i in 1:model.N_spin_orbital]
+    # Zασ=[cal_nk(aασ[i][1],bασ[i][1],μασ[i])-cal_nk(aασ[i][2],bασ[i][2],μασ[i]) for i in 1:model.N_spin_orbital]
     # model.obs
-    @set_obs model  Etotal Ek Eloc Echem Aασ_below Aασ_above  βασ nk nn g33matwασ Ekασ 
+    @set_obs model  Etotal Ek Eloc Echem Aασ_below Aασ_above  bασ nk nn g33matwασ Ekασ 
     Etotal
 end
 
@@ -349,34 +349,34 @@ idx=1
 """
 function compute_Z(model::Model)
     if(model.N_time_step==3)
-        @get_obs model nασ Δασ βασ eασ
+        @get_obs model nασ Δασ bασ eασ
         μασ=zeros(model.N_spin_orbital)
-        αασ=Array{Any}(undef,model.N_spin_orbital)
+        aασ=Array{Any}(undef,model.N_spin_orbital)
         Zασ=zeros(model.N_spin_orbital)
         for (idx,term) in enumerate(model.symmetry)
             i=term[1]
             μασ_=model.e_fns[idx](nασ[i])
-            βασ_=βασ[i]
+            bασ_=bασ[i]
             eασ_=eασ[i]
             Δασ_=Δασ[i]
             nασ_=nασ[i]
-            βbelow,βabove=βασ_
+            bbelow,babove=bασ_
             ebelow,eabove=eασ_
             nbelow=nασ_-Δασ_
             nabove=Δασ_
-            αbelow,nμbelow=cal_αX_nμX(ebelow,nbelow,βbelow,nασ_,μασ_)
-            αabove,nμabove=cal_αX_nμX(eabove,nabove,βabove,1-nασ_,μασ_)
-            αασ_=[αbelow,αabove]
+            abelow,nμbelow=cal_aX_nμX(ebelow,nbelow,βbelow,nασ_,μασ_)
+            aabove,nμabove=cal_aX_nμX(eabove,nabove,babove,1-nασ_,μασ_)
+            aασ_=[abelow,αabove]
             Zασ_=nμbelow-nμabove
             for ασ in term
                 μασ[ασ]=μασ_
-                αασ[ασ]=αασ_
+                aασ[ασ]=aασ_
                 Zασ[ασ]=Zασ_
             end        
         end
         # one may need to add limiting cases. Do it later!
-        # αασ=[cal_αασ_(nασ[i],Δασ[i],βασ[i],eασ[i]) for i in 1:model.N_spin_orbital]
-        # Zασ=[cal_nk(αασ[i][1],βασ[i][1],μασ[i])-cal_nk(αασ[i][2],βασ[i][2],μασ[i]) for i in 1:model.N_spin_orbital]
-        @set_obs model αασ Zασ
+        # aασ=[cal_aασ_(nασ[i],Δασ[i],bασ[i],eασ[i]) for i in 1:model.N_spin_orbital]
+        # Zασ=[cal_nk(aασ[i][1],bασ[i][1],μασ[i])-cal_nk(aασ[i][2],bασ[i][2],μασ[i]) for i in 1:model.N_spin_orbital]
+        @set_obs model aασ Zασ
     end    
 end

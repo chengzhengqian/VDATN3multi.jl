@@ -304,14 +304,14 @@ function extend_G(G_para,symmetry,N_spin_orbital)
 end
 
 """
-extend β_para_below,β_para_above to full form
-β_para_below=[3.0,4.0]
-β_para_above=[3.1,4.1]
+extend b_para_below,b_para_above to full form
+b_para_below=[3.0,4.0]
+b_para_above=[3.1,4.1]
 """
-function extend_β(β_para_below,β_para_above,symmetry,N_spin_orbital)
-    β_para_below_ext=extend_with_symmetry(β_para_below,symmetry,N_spin_orbital)
-    β_para_above_ext=extend_with_symmetry(β_para_above,symmetry,N_spin_orbital)
-    [[β_para_below_ext[i],β_para_above_ext[i]] for i in 1:N_spin_orbital]
+function extend_b(b_para_below,b_para_above,symmetry,N_spin_orbital)
+    b_para_below_ext=extend_with_symmetry(b_para_below,symmetry,N_spin_orbital)
+    b_para_above_ext=extend_with_symmetry(b_para_above,symmetry,N_spin_orbital)
+    [[b_para_below_ext[i],b_para_above_ext[i]] for i in 1:N_spin_orbital]
 end
 
 """

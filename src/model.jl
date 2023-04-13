@@ -14,7 +14,7 @@ mutable struct Model
     # emtpy for N=2
     G12_para
     # N_symmetry or N_symmtry*2, (in the former case, β< = β>; in the latter case, β<,β>), emtpy for N=2
-    β_para
+    b_para
     # interaction, two particle [(idx1,idx2,c)...]
     interaction
     # chemcial potential, to control the density, [(idx1,c)...], empty for fixed density case
