@@ -364,9 +364,9 @@ function compute_Z(model::Model)
             ebelow,eabove=eασ_
             nbelow=nασ_-Δασ_
             nabove=Δασ_
-            abelow,nμbelow=cal_aX_nμX(ebelow,nbelow,βbelow,nασ_,μασ_)
+            abelow,nμbelow=cal_aX_nμX(ebelow,nbelow,bbelow,nασ_,μασ_)
             aabove,nμabove=cal_aX_nμX(eabove,nabove,babove,1-nασ_,μασ_)
-            aασ_=[abelow,αabove]
+            aασ_=[abelow,aabove]
             Zασ_=nμbelow-nμabove
             for ασ in term
                 μασ[ασ]=μασ_
