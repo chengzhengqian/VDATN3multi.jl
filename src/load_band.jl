@@ -32,6 +32,10 @@ n=0.4
 nσ
 ϵsσ=[gene_ϵs(e_fn,nσ[1]),gene_ϵs(e_fn,nσ[2])]
 Here, we use integrate to improve the accuracy.
+# put this is to option,
+40,4, orginal
+# we can put N_samples and N_minimal to the option
+
 """
 function gene_ϵs(e_fn,n;N_samples=40,N_minimal=4)
     index_points_below=max(trunc(Int64,n*N_samples),N_minimal)

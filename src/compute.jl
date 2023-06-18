@@ -24,7 +24,7 @@ cal_Eeff=cal_Eeff_test,N_Ueff=0
 # we now rename it from create_model_N3 to create_model
 so we could include N=2
 # w_mode="fix", similar to "fluc", but uses customized function to construct w (notice in free, we map to u)
-
+# we add options for controling the resolution of k points.
 """
 function create_model(N_spin_orbital,symmetry,n_target,interaction,chemical_potential,e_fns;particle_hole_symmetric=false,w_mode="fluc",cal_Eeff=cal_Eeff_test,N_Ueff=0,N_time_step=3, cal_w_fixed=cal_w_fixed_test,N_w_para_fixed=0)
     N_symmetry=length(symmetry)
