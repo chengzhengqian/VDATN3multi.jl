@@ -124,3 +124,52 @@ compute(model_n3)
 model_n3.obs
 
 # 
+# test for new options
+
+
+# include("../src/vdat.jl")
+include("./vdat.jl")
+# check for "/ssh:gin:/burg/ccce/users/zc2255/VDATN3multi.jl/gin_run/SU_N_doped_n3_taylor.jl"
+
+N_spin_orbital_=5
+symmetry_=[collect(1:N_spin_orbital_)]
+n=0.5
+n_target_=[n]
+e_fn_=gene_spline_band("../src/es_files/es_inf.dat";scale=1.0)
+e_fns_=[e_fn_]
+U=1.0
+# one should use 
+# interaction_=gene_interaction(U,0,N_spin_orbital_)
+interaction=gene_interaction_degenerate_J_0(U,N_spin_orbital_)
+chemical_potential_=[]
+
+function cal_Eeff_SU_N_taylor(Γασ,paras)
+    N_particle=sum(Γασ)
+    μeff=paras[1]
+    coeff=paras[2:end]
+    sum([c*(N_particle-μeff)^i for (i,c) in enumerate(coeff)])
+end
+
+function cal_w_SU_N_taylor(neffασ,w_para)
+    Eeff=[cal_Eeff_SU_N_taylor(cal_Γασ(i,N_spin_orbital_),w_para) for i in 1:2^N_spin_orbital_]
+    w2=exp.(-(Eeff.-minimum(Eeff)))
+    w2=fix_density_w2(w2,neffασ)
+    sqrt.(w2/sum(w2))
+end
+
+# add more options
+model_n3=create_model(N_spin_orbital_,symmetry_,n_target_,
+                      interaction_,chemical_potential_,e_fns_;
+                      particle_hole_symmetric=false,N_time_step=3,
+                      w_mode="fix",N_w_para_fixed=N_spin_orbital_-1,cal_w_fixed=cal_w_SU_N_taylor,N_k_samples=100,N_k_samples_min=20,nασ_tolerance=1e-8,cutoff_Sloc=1e-6,cutoff_Δ=1e-6)
+
+model_n3.options
+model=model_n3
+compute(model)
+model.obs["eασ"][1][1]
+
+
+
+
+
+

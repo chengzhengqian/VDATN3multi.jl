@@ -318,11 +318,11 @@ end
 generate momentum density point
 update from previous version, so it takes e_fns now.
 """
-function cal_eασ(e_fns,nασ,symmetry)
+function cal_eασ(e_fns,nασ,symmetry;N_samples=40,N_minimal=4)
     N_spin_orbital=length(nασ)
     eασ=Vector{Any}(undef,N_spin_orbital)
     for (idx,term) in enumerate(symmetry)
-        es=gene_ϵs(e_fns[idx],nασ[term[1]])
+        es=gene_ϵs(e_fns[idx],nασ[term[1]];N_samples=N_samples,N_minimal=N_minimal)
         for i in term
             eασ[i]=es
         end

@@ -6,6 +6,7 @@ generate interaction, without spin flip term
 interaction=gene_interaction(1.0,0.1,2)
 interaction=gene_interaction(1.0,0.1,4)
 # this does not assume any symmetry
+# this is only for N_spin_orbital=2*N_orbital
 """
 function gene_interaction(U,J,N_spin_orbital)
     N_orbital=trunc(Int,N_spin_orbital/2)

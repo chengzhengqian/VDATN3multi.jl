@@ -7,6 +7,8 @@
 @define_option "nασ_tolerance"
 @define_option "cutoff_Sloc"
 @define_option "cutoff_Δ"
+@define_option "N_k_samples"
+@define_option "N_k_samples_min"
 
 
 
@@ -18,15 +20,15 @@ we first treat , w_mode=="fluc", add checking code later
 # we can also generalize to N_time_step 1-3
 # add other mode later
 add w_mode=="free"
-# the problem is that we need to more flexible way
+# the problem is that we need to have a more flexible way
 #  for w_mode=="free"
 cal_Eeff=cal_Eeff_test,N_Ueff=0
 # we now rename it from create_model_N3 to create_model
 so we could include N=2
-# w_mode="fix", similar to "fluc", but uses customized function to construct w (notice in free, we map to u)
+# w_mode="fix", similar to "fluc", but uses customized function to construct w (notice in free, the user provides the function to compute u instead of w, as in u, there is no restriction on  effective density)
 # we add options for controling the resolution of k points.
 """
-function create_model(N_spin_orbital,symmetry,n_target,interaction,chemical_potential,e_fns;particle_hole_symmetric=false,w_mode="fluc",cal_Eeff=cal_Eeff_test,N_Ueff=0,N_time_step=3, cal_w_fixed=cal_w_fixed_test,N_w_para_fixed=0)
+function create_model(N_spin_orbital,symmetry,n_target,interaction,chemical_potential,e_fns;particle_hole_symmetric=false,w_mode="fluc",cal_Eeff=cal_Eeff_test,N_Ueff=0,N_time_step=3, cal_w_fixed=cal_w_fixed_test,N_w_para_fixed=0,N_k_samples=40,N_k_samples_min=4,nασ_tolerance=1e-7,cutoff_Sloc=1e-5,cutoff_Δ=1e-5)
     N_symmetry=length(symmetry)
     # for place holder
     if(N_time_step==3)
@@ -42,7 +44,6 @@ function create_model(N_spin_orbital,symmetry,n_target,interaction,chemical_pote
     else
         error("unsupported N_time_step $(N_time_step)")
     end
-
     options=Dict{String,Any}()
     obs=Dict{String,Any}()
     if(w_mode=="fluc")
@@ -83,9 +84,13 @@ function create_model(N_spin_orbital,symmetry,n_target,interaction,chemical_pote
     end
     option_w_mode(model,w_mode)
     # default options
-    option_nασ_tolerance(model,1e-7)
-    option_cutoff_Sloc(model,1e-5)
-    option_cutoff_Δ(model,1e-5)
+    # check with model.options
+    # nασ_tolerance=1e-7,cutoff_Sloc=1e-5,cutoff_Δ=1e-5
+    option_nασ_tolerance(model,nασ_tolerance)
+    option_cutoff_Sloc(model,cutoff_Sloc)
+    option_cutoff_Δ(model,cutoff_Δ)
+    option_N_k_samples(model,N_k_samples)
+    option_N_k_samples_min(model,N_k_samples_min)
     model
 end
 
@@ -126,7 +131,7 @@ end
 comptue the discretization of k-points
 """
 function compute_eασ(model::Model)
-    model.obs["eασ"]=cal_eασ(model.e_fns,model.obs["nασ"],model.symmetry)
+    model.obs["eασ"]=cal_eασ(model.e_fns,model.obs["nασ"],model.symmetry;N_samples=option_N_k_samples(model),N_minimal=option_N_k_samples_min(model))
 end
 
 
@@ -182,7 +187,11 @@ function compute_local(model::Model)
     # we add one more restriction, !! tweak the lower bound in future
     # !! set this as an option, 
     # G12ασ=clamp.(G12ασ,0.2,0.5)
-    G12ασ=restrict_G12ασ_.(G12ασ)
+    # this should be put to option, i.e how to restrict
+    # !! only for N_time_step=3 !!, fix the bug for N=2
+    if(model.N_time_step==3)
+        G12ασ=restrict_G12ασ_.(G12ασ)
+    end    
     pmatwασ,g12matwSασ=cal_p_g12_mat(G12ασ)
     g11matwSασ=cal_g11_mat(G12ασ)
     # now, we need to use different scheme
@@ -223,8 +232,9 @@ function compute_local(model::Model)
     # we need to check density constraint, or generate discretization of k points
     if(option_is_density_fixed(model))
         nασ_tolerance=option_nασ_tolerance(model)
-        if(sum(abs.(model.obs["nασ"]-nασ))>nασ_tolerance)
-            error("the density constraint error is larger than expected $(nασ_tolerance)")
+        dens_error=sum(abs.(model.obs["nασ"]-nασ))
+        if(dens_error>nασ_tolerance)
+            error("the density constraint error is larger than expected $(nασ_tolerance) which is $(dens_error)")
         end        
     else
         @set_obs model nασ
